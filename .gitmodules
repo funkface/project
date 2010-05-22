@@ -1,0 +1,6 @@
+[submodule "library/Doctrine"]
+	path = library/Doctrine
+	url = git@github.com:funkface/doctrine1.git
+[submodule "library/Zend"]
+	path = library/Zend
+	url = git://github.com/wilmoore/Vendor-Zend-Framework.git

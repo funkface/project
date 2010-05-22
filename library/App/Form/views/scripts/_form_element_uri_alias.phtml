@@ -1,0 +1,30 @@
+<?php 
+
+    $this->headScript()
+        ->appendFile($this->baseUrl('/js/form-element-uri-alias.js'))
+        ->captureStart();
+        
+?>
+formElementUriAlias('#<?php echo $this->element->getName(); ?>', '#<?php 
+    echo $this->element->getTitleElement()->getName(); ?>');
+<?php 
+
+    $this->headScript()->captureEnd(); 
+
+?><div class="uri-preview"><?php echo 
+
+    $this->escape(
+        $this->absoluteUrl(
+            $this->url(
+                array('section' => $this->element->getSection()->uri),
+                'section'
+            ),
+            true
+        )
+    );
+    
+?>/<span class="page-uri"><?php echo
+
+    $this->escape($this->element->getValue());
+
+?></span></div>

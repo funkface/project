@@ -1,0 +1,18 @@
+<dt id="<?php echo $this->element->getName(); ?>-label">
+    <?php echo $this->formLabel($this->element->getName(), $this->element->getLabel()); ?>
+</dt>
+<dd id="<?php echo $this->element->getName(); ?>-element">
+    <?php
+        if($image = $this->element->getThumbnail()):
+            echo '<img src="' . $image .'" alt="preview image" style="float: left" />';
+        else:
+            echo '<img src="/cms/img/no_image.gif" alt="preview image" style="float: left" />';
+        endif;
+    ?>
+
+    <input style="margin-left: 10px;" type="file" name="<?php echo $this->element->getName(); ?>" value="<?php echo $this->element->getValue()?>" <?php echo $this->element->getAttribs() ?> />
+
+    <?php if($messages = $this->element->getMessages()) echo $this->formErrors($messages); ?>
+
+    <div class="help"><?php echo $this->element->getDescription() ?></div>
+</dd>

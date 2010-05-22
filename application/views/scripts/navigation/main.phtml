@@ -1,0 +1,6 @@
+<ul title="main navigation">
+    <?php foreach($this->nav as $item): ?>
+    <li<?php if($item->isActive()): ?> class="active"<?php endif; 
+    ?>><a title="<?php echo $this->escape($item->title); ?>" href="<?php echo $item->getHref(); ?>"><?php echo $item->label; ?></a></li>
+    <?php endforeach; ?>
+</ul>

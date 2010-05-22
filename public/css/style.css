@@ -1,0 +1,60 @@
+@import 'reset.css';
+@import 'typography.css';
+
+html, body{
+	height: 100%;
+}
+#wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -77px;
+}
+#wedge {
+	height: 75px;
+}
+#top_bar, #footer {
+    background-color: #f2f2f2;
+    overflow: hidden;
+}
+#top_bar {
+	border-bottom: 1px solid #d9d9d9;
+}
+#footer {
+	border-top: 1px solid #d9d9d9;
+	height: 75px;
+}
+#top_bar ul, #footer ul, #main {
+    width: 920px;
+    margin: 0 auto;
+    clear: left;
+}
+#top_bar li, #footer li {
+    float: left;
+    display: block;
+    padding: 8px 0;
+}
+#footer li.last {
+    float: right;
+}
+#footer_legal li {
+	padding: 20px 0 15px;
+}
+#top_bar li a, #footer li a, #footer li span {
+    color: #333;
+    padding: 0 6px;
+    border-left: 1px solid #666;
+}
+#top_bar li.first a, #footer li.first a, #footer li.first span, #footer li.last span {
+    padding-left: 0;
+    border: none;
+}
+#footer li.last span {
+    padding: 0;
+}
+#top_bar li a:hover, #footer li a:hover {
+    color: #ee3300;
+}
+#main {
+    margin-top: 12px;
+}

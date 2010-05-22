@@ -1,0 +1,11 @@
+<ul title="group navigation">
+    <?php foreach($this->nav as $item):
+        if($item->isActive()){
+            $item->setClass($item->class ? $item->class . ' active' : 'active');
+        }
+    ?>
+    <li<?php if($item->class): ?> class="<?php echo $item->class; ?>"<?php endif; 
+    ?>><a title="<?php echo $this->escape($item->title); 
+    ?>" href="<?php echo urldecode($item->getHref()); ?>"><?php echo $item->label; ?></a></li>
+    <?php endforeach; ?>
+</ul>

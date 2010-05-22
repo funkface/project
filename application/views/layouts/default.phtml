@@ -1,0 +1,18 @@
+<?php echo $this->partial('_header.phtml', array('page' => $this->page)); ?>
+
+<div id="wrapper">
+
+    <div id="top_bar"></div>
+
+    <div id="main">
+        <div id="nav"><?php echo $this->action('main', 'navigation'); ?></div>
+        <div id="content"><?php echo $this->layout()->content; ?></div>
+    </div>
+
+    <div id="wedge"></div>
+
+</div>
+
+<div id="footer"></div>
+
+</body></html>
