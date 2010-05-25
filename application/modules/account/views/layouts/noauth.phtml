@@ -1,0 +1,21 @@
+<?php echo $this->partial('_header.phtml'); ?>
+
+<div id="wrapper">
+
+    <div id="login">
+		<h2>Account login</h2>
+        <?php if ($this->form): ?>
+        <form action="<?php echo $this->escape($this->form->getAction()) ?>"
+                               method="<?php echo $this->escape($this->form->getMethod()) ?>"
+                               enctype="<?php echo $this->escape($this->form->getEnctype()) ?>">
+        <?php endif ?>
+        <div id="loginform">
+            <?php echo $this->layout()->content ?>
+        </div>
+    </div>
+
+    </form>
+</div>
+
+</body>
+</html>

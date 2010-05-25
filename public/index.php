@@ -10,7 +10,11 @@ if(!defined('APPLICATION_ENV')){
         define('APPLICATION_ENV', getenv('APPLICATION_ENV'));
     }else{
         // SetEnv only works in .htaccess for Apache 1.3.7 and later
-        $appEnv = trim(file_get_contents(APPLICATION_PATH . '/configs/application_env.txt'));
+        $envPath = APPLICATION_PATH . '/configs/application_env.txt';
+        $appEnv = '';
+        if(file_exists($envPath)){
+        	$appEnv = trim(file_get_contents($envPath));
+        }
         if(!empty($appEnv)){
             define('APPLICATION_ENV', $appEnv);
         }else{
