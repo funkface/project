@@ -7,6 +7,7 @@
  * 
  * @property string $email
  * @property string $password
+ * @property timestamp $last_login_date
  * @property Doctrine_Collection $Project
  * @property Doctrine_Collection $Milestone
  * @property Doctrine_Collection $List
@@ -29,6 +30,9 @@ abstract class Model_Base_User extends Doctrine_Record
         $this->hasColumn('password', 'string', 40, array(
              'type' => 'string',
              'length' => '40',
+             ));
+        $this->hasColumn('last_login_date', 'timestamp', null, array(
+             'type' => 'timestamp',
              ));
     }
 

@@ -19,11 +19,11 @@ class App_Validate_Authorise extends Zend_Validate_Abstract
 
         // Get, and setup DB adapter
         $authAdapter = new App_Auth_Adapter_Doctrine();
-        $authAdapter->setTableName('user')
+        $authAdapter->setTableName('Model_User')
                     ->setIdentityColumn('email')
                     ->setCredentialColumn('password')
 					->setIdentity($value)
-					->setCredential($password);
+					->setCredential($context['password']);
 					
         $auth = Zend_Auth::getInstance();
         $result = $auth->authenticate($authAdapter);

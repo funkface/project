@@ -6,10 +6,7 @@ class Account_Form_Login extends App_Form
     public function init()
     {
     	
-    	$action = $this->getView()->url(array('action' => 'login'));
-    	
-        $this->setAction($action)
-             ->setAttrib('id', 'loginForm');
+        $this->setAttrib('id', 'loginForm');
 
         $username = new Zend_Form_Element_Text('username');
         $username->setLabel('Username')

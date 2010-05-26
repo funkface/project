@@ -15,7 +15,7 @@ class Account_AuthController extends Zend_Controller_Action
         if (null === Zend_Auth::getInstance()->getIdentity()) {
             $this->_forward('login');
         } else {
-            $this->_helper->getHelper('redirector')->gotoSimple('logout');
+            $this->_helper->redirector->gotoRoute(array('action' => 'logout'), 'account');
         }
     }
 
@@ -24,12 +24,13 @@ class Account_AuthController extends Zend_Controller_Action
         $auth = Zend_Auth::getInstance();
 
         $form = new Account_Form_Login();
+        $form->setAction($this->_helper->url->simple('login'));
 
         $this->view->formResponse = '';
 
         if ($this->getRequest()->isPost()) {
             
-            try{
+            //try{
                 
                 if ($form->isValid($this->getRequest()->getPost())) {
     
@@ -38,7 +39,10 @@ class Account_AuthController extends Zend_Controller_Action
                     	Zend_Auth::getInstance()->getIdentity()->id
                     );
                     
-                    $this->_helper->getHelper('redirector')->gotoSimple();
+                    $this->_helper->redirector->gotoRoute(array(
+                        'controller' => 'index',
+                        'action' => 'index'
+                    ), 'account');
     
                 } else if (count($form->getErrors('id')) > 0) {
     
@@ -48,9 +52,9 @@ class Account_AuthController extends Zend_Controller_Action
                     return;
                 }
                 
-            }catch(Exception $e){
+            //}catch(Exception $e){
                 
-            }
+            //}
 
             // Failed - incorrect details
             $this->view->formResponse = 'Login unsuccessful.';
@@ -65,7 +69,7 @@ class Account_AuthController extends Zend_Controller_Action
         $auth->clearIdentity();
         Zend_Session::destroy();
 
-        $this->_helper->getHelper('redirector')->gotoSimple('login');
+        $this->_helper->redirector->gotoRoute(array('action' => 'login'), 'account');
     }
 
 }

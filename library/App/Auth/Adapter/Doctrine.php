@@ -138,12 +138,12 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
     	
         $table = Doctrine_Core::getTable($this->_tableName);
         $q = $table->createQuery('u');
-        $q->where($this->_identityColumn . ' = ?', $this->_identity)
-        	->andWhere($this->_credentialColumn . ' = ?', $this-_credential);
+        $q->where('u.' . $this->_identityColumn . ' = ?', $this->_identity)
+        	->andWhere('u.' . $this->_credentialColumn . ' = ?', $this->_credential);
         	
        	$results = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
        	
-       	switch($results->count()){
+       	switch(count($results)){
        		
        		case 0:
        			$code = Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND;
@@ -153,7 +153,7 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
        		case 1:
        			$code = Zend_Auth_Result::SUCCESS;
         		$messages[] = 'Authentication successful.';
-        		$this->resultRow = $results[0];
+        		$this->_resultRow = $results[0];
         		break;
         		
        		default:

@@ -11,7 +11,7 @@ class App_Filter_EncryptSha1 implements Zend_Filter_Interface
         $config = Zend_Registry::get('config');
 
         $salt = $config->auth->salt;
-        $value = sha1($salt.$value);
+        $value = sha1($salt . $value);
 
         return strtolower((string) $value);
     }
