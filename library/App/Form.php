@@ -12,14 +12,15 @@ class App_Form extends Zend_Form
     public function __construct($options = null)
     {
         parent::__construct($options);
-        $this->addElementPrefixPath('App_Filter', 'App/Filter/', 'filter');
-        $this->addElementPrefixPath('App_Validate', 'App/Validate/', 'validate');
+        $this->addPrefixPath('App_Form_Decorator', 'App/Form/Decorator', 'decorator')
+            ->addElementPrefixPath('App_Filter', 'App/Filter/', 'filter')
+            ->addElementPrefixPath('App_Validate', 'App/Validate/', 'validate');
     }
     
     public function loadDefaultDecorators()
     {
         parent::loadDefaultDecorators();
-        $this->addDecorator('Errors', array('placement' => 'PREPEND'));
+        $this->addDecorator('FormErrorsOnly', array('placement' => 'PREPEND'));
     }
     
     public function isValidWithDoctrineRecord($data, Doctrine_Record $record)

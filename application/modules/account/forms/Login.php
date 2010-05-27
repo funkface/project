@@ -8,14 +8,12 @@ class Account_Form_Login extends App_Form
     	
         $this->setAttrib('id', 'loginForm');
 
-        $username = new Zend_Form_Element_Text('username');
-        $username->setLabel('Username')
+        $username = new Zend_Form_Element_Text('email');
+        $username->setLabel('Email address')
                  ->setAttrib('class', 'text')
                  ->setRequired(true)
                  ->addFilter('StringTrim')
-                 ->addFilter('StripTags')
-                 ->addValidator('Authorise')
-                 ->removeDecorator('Errors'); // don't show errors on login form
+                 ;//->removeDecorator('Errors'); // don't show errors on login form
 
 
         $password = new Zend_Form_Element_Password('password');
@@ -23,8 +21,8 @@ class Account_Form_Login extends App_Form
                  ->setAttrib('class', 'password')
                  ->setRequired(true)
                  ->addFilter('StringTrim')
-                 ->addFilter('StripTags')
-                 ->removeDecorator('Errors');
+                 ->addValidator('Authorise', true, array('email'))
+                 ;//->removeDecorator('Errors');
 
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setLabel('Login')

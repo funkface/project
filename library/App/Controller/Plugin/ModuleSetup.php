@@ -1,6 +1,6 @@
 <?php
 
-class App_Plugin_ModuleSetup extends Zend_Controller_Plugin_Abstract
+class App_Controller_Plugin_ModuleSetup extends Zend_Controller_Plugin_Abstract
 {
 
     public function routeShutdown(Zend_Controller_Request_Abstract $request)

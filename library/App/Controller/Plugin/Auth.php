@@ -1,6 +1,6 @@
 <?php
 
-class App_Plugin_Auth extends Zend_Controller_Plugin_Abstract
+class App_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 {
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {

@@ -49,7 +49,7 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * setTableName() - set the table name to be used in the select query
      *
      * @param  string $tableName
-     * @return Zend_Auth_Adapter_DbTable Provides a fluent interface
+     * @return App_Auth_Adapter_Doctrine Provides a fluent interface
      */
     public function setTableName($tableName)
     {
@@ -61,7 +61,7 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * setIdentityColumn() - set the column name to be used as the identity column
      *
      * @param  string $identityColumn
-     * @return Zend_Auth_Adapter_DbTable Provides a fluent interface
+     * @return App_Auth_Adapter_Doctrine Provides a fluent interface
      */
     public function setIdentityColumn($identityColumn)
     {
@@ -73,7 +73,7 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * setCredentialColumn() - set the column name to be used as the credential column
      *
      * @param  string $credentialColumn
-     * @return Zend_Auth_Adapter_DbTable Provides a fluent interface
+     * @return App_Auth_Adapter_Doctrine Provides a fluent interface
      */
     public function setCredentialColumn($credentialColumn)
     {
@@ -85,7 +85,7 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * setIdentity() - set the value to be used as the identity
      *
      * @param  string $value
-     * @return Zend_Auth_Adapter_DbTable Provides a fluent interface
+     * @return App_Auth_Adapter_Doctrine Provides a fluent interface
      */
     public function setIdentity($value)
     {
@@ -98,7 +98,7 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * to be used, should be supplied in parameterized form, such as 'MD5(?)' or 'PASSWORD(?)'
      *
      * @param  string $credential
-     * @return Zend_Auth_Adapter_DbTable Provides a fluent interface
+     * @return App_Auth_Adapter_Doctrine Provides a fluent interface
      */
     public function setCredential($credential)
     {
@@ -121,15 +121,15 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
         $exception = null;
 
         if ($this->_tableName == '') {
-            $exception = 'A table must be supplied for the Zend_Auth_Adapter_DbTable authentication adapter.';
+            $exception = 'A table must be supplied for the App_Auth_Adapter_Doctrine authentication adapter.';
         } elseif ($this->_identityColumn == '') {
-            $exception = 'An identity column must be supplied for the Zend_Auth_Adapter_DbTable authentication adapter.';
+            $exception = 'An identity column must be supplied for the App_Auth_Adapter_Doctrine authentication adapter.';
         } elseif ($this->_credentialColumn == '') {
-            $exception = 'A credential column must be supplied for the Zend_Auth_Adapter_DbTable authentication adapter.';
+            $exception = 'A credential column must be supplied for the App_Auth_Adapter_Doctrine authentication adapter.';
         } elseif ($this->_identity == '') {
-            $exception = 'A value for the identity was not provided prior to authentication with Zend_Auth_Adapter_DbTable.';
+            $exception = 'A value for the identity was not provided prior to authentication with App_Auth_Adapter_Doctrine.';
         } elseif ($this->_credential === null) {
-            $exception = 'A credential value was not provided prior to authentication with Zend_Auth_Adapter_DbTable.';
+            $exception = 'A credential value was not provided prior to authentication with App_Auth_Adapter_Doctrine.';
         }
 
         if (null !== $exception) {

@@ -26,13 +26,11 @@ class Account_AuthController extends Zend_Controller_Action
         $form = new Account_Form_Login();
         $form->setAction($this->_helper->url->simple('login'));
 
-        $this->view->formResponse = '';
-
         if ($this->getRequest()->isPost()) {
             
-            //try{
+            try{
                 
-                if ($form->isValid($this->getRequest()->getPost())) {
+                if($form->isValid($this->getRequest()->getPost())){
     
                     // Success - update last login and redirect
                     Model_UserTable::getInstance()->updateLastLogin(
@@ -43,22 +41,17 @@ class Account_AuthController extends Zend_Controller_Action
                         'controller' => 'index',
                         'action' => 'index'
                     ), 'account');
-    
-                } else if (count($form->getErrors('id')) > 0) {
-    
-                    // Failed - hash in form doesn't match that in session (possible CSRF attack)
-                    Zend_Auth::getInstance()->clearIdentity();
-                    throw new Exception('A problem has occured');
                 }
                 
-            //}catch(Exception $e){
+            }catch(Exception $e){
                 
-            //}
+            }
 
             // Failed - incorrect details
-            $this->view->formResponse = 'Login unsuccessful.';
+            $form->addError('Login unsuccessful.');
             $auth->clearIdentity();
         }
+        
         $this->view->form = $form;
     }
 
