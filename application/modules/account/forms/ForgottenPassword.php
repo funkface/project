@@ -5,19 +5,16 @@ class Account_Form_ForgottenPassword extends Zend_Form {
 
         $email = new Zend_Form_Element_Text('email');
         $email->setLabel('Email')
-        ->setAttrib('class', 'textElement')
-        ->setRequired(true)
-        ->addFilter('StringTrim')
-        ->addValidator('EmailAddress');
+	        ->setAttrib('class', 'textElement')
+	        ->setRequired(true)
+	        ->addFilter('StringTrim')
+	        ->addValidator('EmailAddress');
 
         $submit = new Zend_Form_Element_Submit('request');
         $submit->setLabel('Request reset link')
-        ->setRequired(true);
+        	->setRequired(true);
 
-        $this->addElements(array($email, $submit))
-        ->addDecorator('FormElements')
-        ->addDecorator('HtmlTag', array('tag' => 'dl', 'class' => 'formDl'))
-        ->addDecorator('Form');
+        $this->addElements(array($email, $submit));
 
     }
     

@@ -64,27 +64,24 @@ class Account_AuthController extends Zend_Controller_Action
         $this->_helper->redirector->gotoRoute(array('action' => 'login'), 'account');
     }
     
-    
     public function forgottenAction(){
 
-        $requestForm = new Account_Form_ForgottenPassword();
-        $updateForm = new Account_Form_PasswordResetWithCredentials();
-
+        $form = new Account_Form_ForgottenPassword();
         $request = $this->getRequest();
 
         if($request->isPost()){
 
             $post = $request->getPost();
 
-            if($requestForm->isValid($post)){
+            if($form->isValid($post)){
 
-                Model_User::getInstance()->findByEmail($post['email']);
+                $user = Model_UserTable::getInstance()->findOneByEmail($post['email']);
 
                 if(!$user){
 	
                 	// More secure to not reveal existence of user accounts
                     //$form->email->addError('User account not found');
-                    $this->view->requestFormResponse = 'A password reset link has been sent, check your email in a few minutes';
+                    $this->view->formResponse = 'A password reset link has been sent, check your email in a few minutes';
                     return;
 
                 }else{
@@ -96,73 +93,17 @@ class Account_AuthController extends Zend_Controller_Action
                     $email = new App_Alert_PasswordReset();
                     $email->send($user);
 
-                    $this->view->requestFormResponse = 'A password reset link has been sent, check your email in a few minutes';
+                    $this->view->formResponse = 'A password reset link has been sent, check your email in a few minutes';
                     return;
                 }
-
-            }else if($updateForm->isValid($post)) while(true){
-
-                $user = Model_User::getInstance()->findByEmail($updateForm->getValue('email'));
-
-                if($user){
-
-                    if(!$user->isLocked()){
-
-                        $filter = new App_Form_Filter_EncryptSha1();
-                        $oldPassword = $filter->filter($updateForm->getValue('current_password'));
-
-                        if($oldPassword == $user->password){
-
-                            $newPassword = $updateForm->getValue('password');
-
-                            $validatorChain = new Zend_Validate();
-                            $validatorChain
-                                ->addValidator(new App_Form_Validate_Password($user))
-                                ->addValidator(new App_Form_Validate_PasswordHistory($user));
-
-                            if($validatorChain->isValid($newPassword)){
-
-                                $user->password = $filter->filter($newPassword);
-                                $user->reset_code = null;
-                                $user->reset_request = null;
-                                $user->unlock();
-
-                                $passwords = new PasswordAdmin();
-                                $passwords->addToHistory($user->id, $oldPassword);
-                                
-                                Zend_Registry::get('log')->log('reset password', null, null, $user->id);
-
-                                $this->view->updateFormResponse = 'Your password has been successfully reset';
-                                return;
-
-                            }else{
-
-                                $updateForm->getElement('password')->addErrors($validatorChain->getMessages());
-                                break;
-                            }
-
-                        }
-                    }
-
-                    $user->loginAttempt();
-                }
-
-                $updateForm->getElement('email')->addError('Invalid email and password combination');
-
-                break;
             }
         }
 
-        $this->view->requestFormResponse = 'If you have forgotten your password or if your account has been locked
+        $this->view->formResponse = 'If you have forgotten your password or if your account has been locked
         due to too many unsuccessful login attempts, enter your email address here to request that a password reset link
         be sent to your inbox.';
 
-        $this->view->updateFormResponse = 'Alternatively, if you remember your password but it has expired, complete the
-        form below to set your new password.';
-
-        $this->view->requestForm = $requestForm;
-        $this->view->updateForm = $updateForm;
-
+        $this->view->form = $form;
     }
 
     /*

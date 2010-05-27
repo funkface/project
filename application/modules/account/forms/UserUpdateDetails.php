@@ -6,6 +6,5 @@ class Account_Form_UserUpdateDetails extends Account_Form_User
     {
         $this->_addAllElementsToForm();
         $this->removeElement('username');
-
     }
 }
