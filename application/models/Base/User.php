@@ -8,6 +8,12 @@
  * @property string $email
  * @property string $password
  * @property timestamp $last_login_date
+ * @property timestamp $last_login_attempt_date
+ * @property integer $num_login_attempts
+ * @property timestamp $reset_request_date
+ * @property string $reset_code
+ * @property string $first_name
+ * @property string $last_name
  * @property Doctrine_Collection $Project
  * @property Doctrine_Collection $Milestone
  * @property Doctrine_Collection $List
@@ -33,6 +39,27 @@ abstract class Model_Base_User extends Doctrine_Record
              ));
         $this->hasColumn('last_login_date', 'timestamp', null, array(
              'type' => 'timestamp',
+             ));
+        $this->hasColumn('last_login_attempt_date', 'timestamp', null, array(
+             'type' => 'timestamp',
+             ));
+        $this->hasColumn('num_login_attempts', 'integer', null, array(
+             'type' => 'integer',
+             ));
+        $this->hasColumn('reset_request_date', 'timestamp', null, array(
+             'type' => 'timestamp',
+             ));
+        $this->hasColumn('reset_code', 'string', 40, array(
+             'type' => 'string',
+             'length' => '40',
+             ));
+        $this->hasColumn('first_name', 'string', 63, array(
+             'type' => 'string',
+             'length' => '63',
+             ));
+        $this->hasColumn('last_name', 'string', 63, array(
+             'type' => 'string',
+             'length' => '63',
              ));
     }
 

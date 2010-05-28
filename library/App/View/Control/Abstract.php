@@ -33,7 +33,7 @@ abstract class App_View_Control_Abstract
      * Set form state from config object
      *
      * @param  Zend_Config $config
-     * @return App_Grid
+     * @return App_View_Control_Abstract
      */
     public function setConfig(Zend_Config $config)
     {
@@ -44,7 +44,7 @@ abstract class App_View_Control_Abstract
      * Set form state from options array
      *
      * @param  array $options
-     * @return App_Grid
+     * @return App_View_Control_Abstract
      */
     public function setOptions(array $options)
     {
@@ -92,7 +92,7 @@ abstract class App_View_Control_Abstract
      * Set view object
      *
      * @param  Zend_View_Interface $view
-     * @return Zend_Form
+     * @return App_View_Control_Abstract
      */
     public function setView(Zend_View_Interface $view = null)
     {
@@ -118,14 +118,14 @@ abstract class App_View_Control_Abstract
         return $this->_view;
     }
     
-    public function preRender()
+    protected function _preRender()
     {
         // override
     }
     
     public function render()
     {
-        $this->preRender();
+        $this->_preRender();
         
         $view = $this->getView();
         $result = $view->partial($this->getViewScript(), $this->_viewVars);

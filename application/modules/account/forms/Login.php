@@ -21,7 +21,7 @@ class Account_Form_Login extends App_Form
                  ->setAttrib('class', 'password')
                  ->setRequired(true)
                  ->addFilter('StringTrim')
-                 ->addValidator('Authorise', true, array('email'))
+                 ->addValidator('AuthoriseWithLockout', true, array('Model_User', 'email'))
                  ;//->removeDecorator('Errors');
 
         $submit = new Zend_Form_Element_Submit('submit');

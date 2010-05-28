@@ -44,6 +44,13 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * @var array
      */
     protected $_resultRow = null;
+    
+    /**
+     * $_identityRecords - All records with _identity = _identityColumn
+     *
+     * @var Doctrine_Collection
+     */
+    protected $_identityRecords = null;
 
     /**
      * setTableName() - set the table name to be used in the select query
@@ -119,6 +126,8 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
     public function authenticate()
     {
         $exception = null;
+        $this->_resultRow = null;
+        $this->_identityRecords = null;
 
         if ($this->_tableName == '') {
             $exception = 'A table must be supplied for the App_Auth_Adapter_Doctrine authentication adapter.';
@@ -138,12 +147,13 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
     	
         $table = Doctrine_Core::getTable($this->_tableName);
         $q = $table->createQuery('u');
-        $q->where('u.' . $this->_identityColumn . ' = ?', $this->_identity)
-        	->andWhere('u.' . $this->_credentialColumn . ' = ?', $this->_credential);
+        $q->where('u.' . $this->_identityColumn . ' = ?', $this->_identity);
+        	//->andWhere('u.' . $this->_credentialColumn . ' = ?', $this->_credential);
         	
-       	$results = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+       	//$results = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+       	$this->_identityRecords = $q->execute();
        	
-       	switch(count($results)){
+       	switch(count($this->_identityRecords)){
        		
        		case 0:
        			$code = Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND;
@@ -151,9 +161,14 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
        			break;
        			
        		case 1:
-       			$code = Zend_Auth_Result::SUCCESS;
-        		$messages[] = 'Authentication successful.';
-        		$this->_resultRow = $results[0];
+       		    if($this->_identityRecords[0]->{$this->_credentialColumn} == $this->_credential){
+           			$code = Zend_Auth_Result::SUCCESS;
+            		$messages[] = 'Authentication successful.';
+            		$this->_resultRow = $this->_identityRecords[0]->toArray();
+       		    }else{
+       		        $code = Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID;
+                    $messages[] = 'Supplied credential is invalid.';
+       		    }
         		break;
         		
        		default:
@@ -163,6 +178,16 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
        	}
         
         return new Zend_Auth_Result($code, $this->_identity, $messages);
+    }
+    
+    /**
+     * getIdentityRecords() - Returns all records that matched identity
+     * 
+     * @return Doctrine_Collection|null
+     */
+    public function getIdentityRecords()
+    {
+        return $this->_identityRecords;
     }
     
 	/**

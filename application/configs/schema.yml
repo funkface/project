@@ -84,3 +84,10 @@ User:
         email: string(127)
         password: string(40)
         last_login_date: timestamp
+        last_login_attempt_date: timestamp
+        num_login_attempts: integer
+        reset_request_date: timestamp
+        reset_code: string(40)
+        first_name: string(63)
+        last_name: string(63)
+        

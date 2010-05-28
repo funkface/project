@@ -61,7 +61,7 @@ class App_View_Control_Grid extends App_View_Control_Abstract
         return $this;
     }
     
-    public function preRender()
+    protected function _preRender()
     {
         if($this->_sortBy == null){
             $this->_sortBy = $this->_sortableColumnNames[0];

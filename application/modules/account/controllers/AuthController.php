@@ -27,16 +27,12 @@ class Account_AuthController extends Zend_Controller_Action
         $form->setAction($this->_helper->url->simple('login'));
 
         if ($this->getRequest()->isPost()) {
-            
+
             try{
                 
                 if($form->isValid($this->getRequest()->getPost())){
     
-                    // Success - update last login and redirect
-                    Model_UserTable::getInstance()->updateLastLogin(
-                    	Zend_Auth::getInstance()->getIdentity()->id
-                    );
-                    
+                    // Success - redirect
                     $this->_helper->redirector->gotoRoute(array(
                         'controller' => 'index',
                         'action' => 'index'
@@ -46,7 +42,7 @@ class Account_AuthController extends Zend_Controller_Action
             }catch(Exception $e){
                 
             }
-
+            
             // Failed - incorrect details
             $form->addError('Login unsuccessful.');
             $auth->clearIdentity();

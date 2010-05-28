@@ -70,7 +70,7 @@ class App_Image {
         return $method;
     }
 
-    /*
+    /**
      * Resizes, and optionally reformats, images without stretching or producing distortion.
      * Uses one of six sizing algorithms:
      *
@@ -94,7 +94,7 @@ class App_Image {
      * limit,centre
      * As the non-limit methods but the image is only resized if the source dimensions are greater than the destination 
      * dimensions ($dstWidth, $dstHeight). With all limit methods, the destination image may not match, but will not 
-     * exceed, the destination dimansions ($dstWidth, $dstHeight).
+     * exceed, the destination dimensions ($dstWidth, $dstHeight).
      * 
      * In all cases, if the destination dimensions and format match those of the source file, the source file is copied
      * to the destination path as is.
