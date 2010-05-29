@@ -15,7 +15,7 @@ class App_Filter_HtmlToFormattedPlainText extends Zend_Filter_StripTags
      *  @access public
      *  @see $replace
      */
-    var $search = array(
+    protected $search = array(
         "/\r/",                                  // Non-legal carriage return
         "/[\n\t]+/",                             // Newlines and tabs
         '/[ ]{2,}/',                             // Runs of spaces, pre-handling
@@ -24,7 +24,7 @@ class App_Filter_HtmlToFormattedPlainText extends Zend_Filter_StripTags
         //'/<!-- .* -->/',                         // Comments -- which strip_tags might have problem a with
         '/<h[123][^>]*>(.*?)<\/h[123]>/ie',      // H1 - H3
         '/<h[456][^>]*>(.*?)<\/h[456]>/ie',      // H4 - H6
-        '/<p[^>]*>(.*?)<\/p>/i',                           // <P>
+        '/<p[^>]*>(.*?)<\/p>/i',                 // <P>
         '/<br[^>]*>/i',                          // <br>
         '/<b[^>]*>(.*?)<\/b>/ie',                // <b>
         '/<strong[^>]*>(.*?)<\/strong>/ie',      // <strong>
@@ -34,7 +34,7 @@ class App_Filter_HtmlToFormattedPlainText extends Zend_Filter_StripTags
         '/(<ol[^>]*>|<\/ol>)/i',                 // <ol> and </ol>
         '/<li[^>]*>(.*?)<\/li>/i',               // <li> and </li>
         '/<li[^>]*>/i',                          // <li>
-        '/<a [^>]*href="([^"]+)"[^>]*>(.*?)<\/a>/ie',
+        '/<a [^>]*href="([^"]+)"[^>]*>(.*?)<\/a>/i',
                                                  // <a href="">
         '/<hr[^>]*>/i',                          // <hr>
         '/(<table[^>]*>|<\/table>|<dl[^>]*>|<\/dl>)/i',           // <table> and </table> + <dl>
@@ -69,7 +69,7 @@ class App_Filter_HtmlToFormattedPlainText extends Zend_Filter_StripTags
      *  @access public
      *  @see $search
      */
-    var $replace = array(
+    protected $replace = array(
         '',                                     // Non-legal carriage return
         ' ',                                    // Newlines and tabs
         ' ',                                    // Runs of spaces, pre-handling
@@ -109,8 +109,8 @@ class App_Filter_HtmlToFormattedPlainText extends Zend_Filter_StripTags
         '--',
         '-',
         '*',
-        '£',
-        'EUR',                                  // Euro sign. Û ?
+        'Â£',
+        'EUR',                                  // Euro sign. ?
         '',                                     // Unknown/unhandled entities
         ' '                                     // Runs of spaces, post-handling
     );
@@ -127,6 +127,8 @@ class App_Filter_HtmlToFormattedPlainText extends Zend_Filter_StripTags
     public function filter($value){
         
         $text = trim(stripslashes($value));
+        //die(print_r(array($this->search, $this->replace, $text), true));
+        //die($text);
         $text = preg_replace($this->search, $this->replace, $text);
         $text = parent::filter($text);
         $text = preg_replace(array('/\n\s+\n/', '/[\n]{3,}/'), "\n\n", $text);

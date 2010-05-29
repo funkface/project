@@ -47,10 +47,10 @@ class Model_User extends Model_Base_User
             $this->resetRequest();
             
             $email = new App_Mail_Alert();
-            $email->setUser($this);
-            $email->setViewScript('alert/_account_locked.phtml');
-            $email->addViewVars(array('unlockDate' => $this->getUnlockDate()));
-            $email->send();
+            $email->setUser($this)
+            	->setViewScript('alert/_account_locked.phtml')
+            	->addViewVars(array('unlockDate' => $this->getUnlockDate()))
+            	->send();
         }
         
     }

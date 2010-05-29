@@ -2,14 +2,10 @@
 class App_View_Helper_AbsoluteUrl extends Zend_View_Helper_Abstract
 {
 
-    public function absoluteUrl($file = null, $baseUrlAlreadyAdded = false){
+    public function absoluteUrl(array $urlOptions = array(), $name = null, $reset = false, $encode = true){
     
-        $url = $baseUrlAlreadyAdded ? $file : $this->view->baseUrl($file);
-        
-        if(strpos($url, '://') === false){
-            
-            $url = 'http://' . $_SERVER["SERVER_NAME"] . '/' . ltrim($url, '/\\');
-        }
+        $url = $this->view->url($urlOptions, $name, $reset, $encode);
+        $url = 'http://' . $_SERVER["SERVER_NAME"] . $url;
         
         return $url;
     }

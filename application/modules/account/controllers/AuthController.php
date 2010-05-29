@@ -86,8 +86,10 @@ class Account_AuthController extends Zend_Controller_Action
                     $user->resetRequest();
 
                     // send email to user
-                    $email = new App_Alert_PasswordReset();
-                    $email->send($user);
+                    $email = new App_Mail_Alert();
+		            $email->setUser($user)
+		            	->setViewScript('alert/_password_reset.phtml')
+		            	->send();
 
                     $this->view->formResponse = 'A password reset link has been sent, check your email in a few minutes';
                     return;

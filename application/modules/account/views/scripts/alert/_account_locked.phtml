@@ -5,10 +5,15 @@
 Your account will be automatically unlocked on <?php echo $this->unlockDate; ?></p>
 
 <p>If you're having trouble logging in because you've forgotten your password, 
-click the link below to reset your password</p>
+click the link below to reset your password.</p>
+
+<a href="<?php echo $url = $this->absoluteUrl(array(
+	'action' => 'reset', 
+	'code' => $this->to->reset_code
+), 'account'); ?>"><?php echo $url; ?></a>
 
 <p>If you suspect someone else caused your account to become locked please 
 contact support immediately by replying to this email.</p>
 
 <p>Best regards,<br/>
-The Project Team</p>
+Tidy Mind</p>
