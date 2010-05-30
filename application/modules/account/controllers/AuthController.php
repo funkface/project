@@ -12,11 +12,10 @@ class Account_AuthController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        if (null === Zend_Auth::getInstance()->getIdentity()) {
-            $this->_forward('login');
-        } else {
-            $this->_helper->redirector->gotoRoute(array('action' => 'logout'), 'account');
-        }
+        $this->_helper->redirector->gotoRoute(array(
+        	'controller' => 'auth',
+        	'action' => (null === Zend_Auth::getInstance()->getIdentity()) ? 'login' : 'logout'
+        ), 'account');
     }
 
     public function loginAction()
@@ -104,71 +103,54 @@ class Account_AuthController extends Zend_Controller_Action
         $this->view->form = $form;
     }
 
-    /*
     public function resetAction(){
-
-        $config = Zend_Registry::get('config')->auth->reset;
+        
         $request = $this->getRequest();
-        $passwords = new PasswordAdmin;
+        $user = Model_UserTable::getInstance()->findOneByResetCode($request->getParam('code'));
 
-        if($code = $this->_helper->input('code')){
+        if($user){
 
-            $users = new User();
-            if($user = $users->fetchByResetCode(base64_decode($code))){
+        	// is code still within its expiry
+        	$config = Zend_Registry::get('config')->auth->reset;
+        	$interval = time() - strtotime($user->reset_request_date);
+        	
+        	if($interval <= $config->maxInterval){ 
 
-                $interval = time() - strtotime($user->reset_request);
+        		$form = new Account_Form_PasswordReset($user);
+        		if($request->isPost()){
 
-                // is code still within its expiry
-                if($interval <= $config->maxInterval){
+        			$post = $request->getPost();
+        			if($form->isValid($post)){
 
-                    $form = new forms_PasswordReset($user);
-                    if($request->isPost()){
+        				$user->password = $form->getValue('password');
+        				$user->reset_code = null;
+        				$user->reset_request_date = null;
+        				$user->unlock();
 
-                        $post = $request->getPost();
-                        if($form->isValid($post)){
+        				$this->view->formResponse = 
+        					'Your password has been successfully reset, <a href="' . 
+        					$this->_helper->url->simple('index') . '">click here to login</a>';
+        				return;
+        			}
+        		}
 
-                            if($form->getValue('email') == $user->email){
+        		$this->view->formResponse = 'Enter your email address and new password here';
+        		$this->view->form = $form;
+        		return;
 
-                                $lastPassword = $user->password;
+        	}else{
 
-                                $filter = new App_Form_Filter_EncryptSha1();
-                                $user->password = $filter->filter($form->getValue('password'));
-                                $user->reset_code = null;
-                                $user->reset_request = null;
-                                $user->unlock();
-
-                                $passwords->addToHistory($user->id, $lastPassword);
-
-                                $this->view->formResponse = 'Your password has been successfully reset, <a href="/">click here to login</a>';
-                                return;
-
-                            }else{
-
-                                $form->email->addError('please enter the email address to which the reset link was sent');
-                            }
-
-                        }
-                    }
-
-                    $this->view->formResponse = 'Enter your email address and new password here';
-                    $this->view->form = $form;
-                    return;
-
-                }else{
-
-                    // code has expired so delete it, probably not stricly necessary
-                    $user->reset_code = null;
-                    $user->reset_request = null;
-                    $user->save();
-                }
-
-            }
+        		// code has expired so delete it, probably not strictly necessary
+        		$user->reset_code = null;
+        		$user->reset_request_date = null;
+        		$user->save();
+        	}
 
         }
 
-        $this->view->formResponse = 'This reset link is invalid, <a href="/auth/forgotten">click here to request another</a>';
+        $this->view->formResponse = 'This reset link is invalid, <a href="' .
+        $this->_helper->url->simple('forgotten') . '">click here to request another</a>';
 
     }
-    */
 
 }

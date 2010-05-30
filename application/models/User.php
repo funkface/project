@@ -90,4 +90,10 @@ class Model_User extends Model_Base_User
         return ($this->num_login_attempts >= $this->_lockOut->maxAttempts);
     }
     
+    protected function setPassword($password)
+    {
+    	$filter = new App_Filter_EncryptSha1();
+    	$this->_set('password', $filter->filter($password));
+    }
+    
 }

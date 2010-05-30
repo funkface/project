@@ -101,8 +101,7 @@ class App_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
     }
 
     /**
-     * setCredential() - set the credential value to be used, optionally can specify a treatment
-     * to be used, should be supplied in parameterized form, such as 'MD5(?)' or 'PASSWORD(?)'
+     * setCredential() - set the credential value to be used.
      *
      * @param  string $credential
      * @return App_Auth_Adapter_Doctrine Provides a fluent interface

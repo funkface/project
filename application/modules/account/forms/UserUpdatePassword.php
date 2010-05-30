@@ -7,7 +7,6 @@ class Account_Form_UserUpdatePassword extends App_Form
     public function __construct($user)
     {
         $this->_user = $user;
-
         parent::__construct(array());
     }
 
@@ -16,32 +15,34 @@ class Account_Form_UserUpdatePassword extends App_Form
 
         $existingPassword = new Zend_Form_Element_Password('current_password');
         $existingPassword->setLabel('Your Current Password')
-            ->setAttrib('class', 'passwordElement')
-            ->addFilter('StripTags')
+            ->setAttrib('class', 'password')
+            ->setRequired(true)
             ->addFilter('StringTrim')
-            ->setRequired(true);
+            ->addValidator('Identical', true, array(
+            	$this->user->password,
+            	'messages' => array(
+            		Zend_Validate_Identical::NOT_SAME => 
+            		'please enter your current password.'
+            	)
+           	));
 
         $password = new Zend_Form_Element_Password('password');
         $password->setLabel('New Password')
-            ->setAttrib('class', 'passwordElement')
-            ->addFilter('StripTags')
-            ->addFilter('StringTrim')
+            ->setAttrib('class', 'password')
             ->setRequired(true)
-            ->addValidator('Password', true, $this->_user)
-            ->addValidator('PasswordHistory', true, $this->_user);
+            ->addFilter('StringTrim')
+            ->addValidator('Password');
 
         $passwordConfirm = new Zend_Form_Element_Password('password_confirm');
         $passwordConfirm->setLabel('Confirm New Password')
-            ->setAttrib('class', 'passwordElement')
+            ->setAttrib('class', 'password')
             ->setRequired(true)
-            ->addFilter('StripTags')
             ->addFilter('StringTrim')
-            //->addPrefixPath('App_Filter','App/Form/Filter', 'filter')
-            //->addFilter('EncryptSha1')
             ->addValidator('Match', true, array($password));
 
         $save = new Zend_Form_Element_Submit('save');
-        $save->setLabel('save');
+        $save->setLabel('save')
+        	->setAttrib('class', 'submit');
 
         $this->addElements(array(
             $existingPassword,
