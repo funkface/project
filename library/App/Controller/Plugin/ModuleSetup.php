@@ -20,7 +20,8 @@ class App_Controller_Plugin_ModuleSetup extends Zend_Controller_Plugin_Abstract
 
             Zend_Layout::startMvc(array());
             $layout = Zend_Layout::getMvcInstance();
-            $layout->setLayoutPath('../application/modules/' . $moduleName . '/views/layouts/')->setLayout($moduleName);
+            $layout->setLayoutPath('../application/modules/' . $moduleName . '/views/layouts/')
+            	->setLayout($moduleName);
 
         }
 

@@ -1,0 +1,28 @@
+Forum
+
+Account
+	Register, with captcha; email activation; membership request sent to moderator;
+		logged in users see shorter registration.
+	Login, with brute force protection lock-out; logout
+	Password recovery
+	Edit details
+	Upload picture
+	Edit signature
+	Email alert settings, moderators section
+	
+Private messages
+	Inbox containing: messages, moderators only: reported posts and join requests, filterable
+	Sent, paginated
+	Compose, preview and send message, with autocomplete To textfield, and wysiwyg
+	Search
+	
+Forum
+	List topics, paginated
+	Topics list posts, paginated
+	Post edit, preview, delete with wysiwyg
+	List of members
+	Search
+	Moderators can edit, move and delete posts, lock and delete topics and ban users.
+	
+Admin
+	Appoint and demote moderators
