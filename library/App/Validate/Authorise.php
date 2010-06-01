@@ -30,7 +30,7 @@ class App_Validate_Authorise extends Zend_Validate_Abstract
             ->setIdentityColumn($this->_identityColumn)
             ->setCredentialColumn($this->_credentialColumn);
             
-        $this->_auth = Zend_Auth::getInstance();;
+        $this->_auth = Zend_Auth::getInstance();
     }
 
     public function isValid($value, $context = null)

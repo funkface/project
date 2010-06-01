@@ -16,15 +16,5 @@ class Model_UserTable extends Doctrine_Table
     {
         return Doctrine_Core::getTable('Model_User');
     }
-
-    /**
-     * Update a user's last login date
-     */
-    public function updateLastLogin($userId)
-    {
-	    $user = $this->findOneById($userId);
-	    $date = new Zend_Date();
-	    $user->last_login_date = $date->get(Zend_Date::ISO_8601);
-	    $user->save();
-    }
+    
 }

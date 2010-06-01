@@ -18,6 +18,11 @@ class Model_User extends Model_Base_User
         $this->_lockOut = Zend_Registry::get('config')->auth->lockOut;
     }
     
+    public function isActive(){
+        
+        return ($this->activation_date !== null);
+    }
+    
     public function isLocked(){
                     
         // unlock account if enough time has elapsed 
@@ -61,8 +66,8 @@ class Model_User extends Model_Base_User
         $this->unlock();
     }
     
-    public function unlock(){
-        
+    public function unlock()
+    {
         /*
         if($this->_locked()){
             Zend_Registry::get('log')->log('account unlocked', null, null, $this->id);
@@ -74,11 +79,40 @@ class Model_User extends Model_Base_User
         $this->save();
     }
     
-    public function resetRequest(){
-        
+    public function resetRequest()
+    {
         $this->reset_code = sha1(uniqid());
         $this->reset_request_date = date('c');
         $this->save();
+        
+        // send email to user
+        $email = new App_Mail_Alert();
+        $email->setUser($this)
+            ->setViewScript('alert/_password_reset.phtml')
+            ->send();
+    }
+    
+    public function register(Model_Group $group)
+    {
+        $this->registration_code = sha1(uniqid());
+        $this->registration_date = date('c');
+        $this->Groups[] = $group;
+        $this->save();
+        
+        // send email to user
+        $email = new App_Mail_Alert();
+        $email->setUser($this)
+            ->setViewScript('alert/_activate.phtml')
+            ->send();
+    }
+    
+    public function activate()
+    {
+        $this->activation_code = null;
+        $this->activation_date = date('c');
+        $this->save();
+        
+        $this->Groups[0]->requestMembership($this);
     }
     
     public function getUnlockDate()

@@ -95,15 +95,8 @@ class Account_AuthController extends Zend_Controller_Action
 
                 }else{
 
-                    // store reset details and save
+                    // store reset details, save and send alert
                     $user->resetRequest();
-
-                    // send email to user
-                    $email = new App_Mail_Alert();
-		            $email->setUser($user)
-		            	->setViewScript('alert/_password_reset.phtml')
-		            	->send();
-
                     $this->view->formResponse = 'A password reset link has been sent, check your email in a few minutes';
                     return;
                 }
@@ -181,15 +174,26 @@ class Account_AuthController extends Zend_Controller_Action
     		$user = new Model_User();
     		$user->fromArray($form->getValues());
     		$user->Groups[] = $group;
-    		$user->save();
+    		$user->register();
     	}
     }
     
     public function activateAction(){
     	
+        $request = $this->getRequest();
     	$code = $request->getParam('code');
-    	$user = Model_UserTable::getInstance()->findOneByRegistrationCode($code);
+    	$user = Model_UserTable::getInstance()->findOneByActivationCode($code);
+    	$form = new Account_Form_Activate($user);
     	
+    	if($request->isPost() && $form->isValid($request->getPost())){
+    	    
+    	    $user->activate();
+    	    
+    	    $this->_helper->redirector->gotoRoute(array(
+                'controller' => 'index',
+                'action' => 'index'
+            ), 'account');
+    	}
     }
 
 }

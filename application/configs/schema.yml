@@ -5,7 +5,8 @@ User:
         email: string(127)
         password: string(40)
         registration_date: timestamp
-        registration_code: string(40)
+        activation_date: timestamp
+        activation_code: string(40)
         last_login_date: timestamp
         last_login_attempt_date: timestamp
         num_login_attempts: integer
@@ -16,4 +17,68 @@ User:
         member_no: string(63)
         avatar: string(32)
         signature: string(255)
+    relatations:
+        Groups:
+            class: Group
+            local: user_id
+            foreign: group_id
+            refClass: UserGroup
+        ReceivedMessages:
+            class: Message
+            local: user_id
+            foreign: message_id
+            refClass: UserMessage
+            foreignAlias: To
+        SentMessages:
+            class: Message
+            foreign: from_user_id
+            foreignAlias: From
+        
+UserGroup:
+    columns:
+        user_id:
+            type: integer
+            notnull: true
+            primary: true
+        group_id:
+            type: integer
+            notnull: true
+            primary: true
+        role:
+            type: enum
+            values: [request, member, leader]
+            default: request
+        
+Group:
+    columns:
+        title: 
+            type: string(63)
+            notblank: true
+        description: string(127)
+        abbr: string(8)
+        
+Message:
+    columns:
+        type:
+            type: enum
+            values: [message, request, report]
+        from_user_id: integer
+        title: 
+            type: string(63)
+            notblank: true
+        body: string(102400)
+        
+UserMessage:
+    columns:
+        user_id:
+            type: integer
+            notnull: true
+            primary: true
+        message_id: 
+            type: integer
+            notnull: true
+            primary: true
+        status:
+            type: enum
+            values: [new, read, deleted]
         
