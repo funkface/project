@@ -7,7 +7,7 @@ class Account_AuthController extends Zend_Controller_Action
      */
     public function init()
     {
-    	$this->_helper->layout->setLayout('noauth');
+    	//$this->_helper->layout->setLayout('noauth');
     }
 
     public function indexAction()
@@ -20,7 +20,7 @@ class Account_AuthController extends Zend_Controller_Action
 
     public function loginAction()
     {
-        $auth = Zend_Auth::getInstance();
+        $auth = Zend_Auth::getInstance();   
 		$request = $this->getRequest();
         $form = new Account_Form_Login();
         $form->setAction($this->_helper->url->simple('login'));
@@ -157,11 +157,12 @@ class Account_AuthController extends Zend_Controller_Action
 
         $this->view->formResponse = 'This reset link is invalid, <a href="' .
         $this->_helper->url->simple('forgotten') . '">click here to request another</a>';
+
     }
     
     public function registerAction()
     {
-    	$form = Account_Form_Register();
+    	$form = new Account_Form_Register();
     	$request = $this->getRequest();
     	
     	$group = Model_GroupTable::getInstance()->findOneByAbbr($request->getParam('group'));
@@ -173,9 +174,15 @@ class Account_AuthController extends Zend_Controller_Action
     		
     		$user = new Model_User();
     		$user->fromArray($form->getValues());
-    		$user->Groups[] = $group;
-    		$user->register();
+    		$user->register($group);
+    		
+    		$this->_helper->redirector->gotoRoute(array(
+                'controller' => 'index',
+                'action' => 'index'
+            ), 'account');
     	}
+    	
+    	$this->view->form = $form;
     }
     
     public function activateAction(){
@@ -194,6 +201,7 @@ class Account_AuthController extends Zend_Controller_Action
                 'action' => 'index'
             ), 'account');
     	}
+    	$this->view->form = $form;
     }
 
 }

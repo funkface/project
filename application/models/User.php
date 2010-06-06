@@ -18,11 +18,6 @@ class Model_User extends Model_Base_User
         $this->_lockOut = Zend_Registry::get('config')->auth->lockOut;
     }
     
-    public function isActive(){
-        
-        return ($this->activation_date !== null);
-    }
-    
     public function isLocked(){
                     
         // unlock account if enough time has elapsed 
@@ -41,23 +36,22 @@ class Model_User extends Model_Base_User
 
         $this->num_login_attempts = $this->num_login_attempts + 1;
         $this->last_login_attempt_date = date('c');
-        $this->save();
-        
+
         //Zend_Registry::get('log')->log('login attempt (' . $this->num_login_attempts . ')', null, null, $this->id);
         
         if($this->num_login_attempts == $this->_lockOut->maxAttempts){
             
             //Zend_Registry::get('log')->log('account locked', null, null, $this->id);
             
-            $this->resetRequest();
+            $this->_reset();
             
             $email = new App_Mail_Alert();
             $email->setUser($this)
             	->setViewScript('alert/_account_locked.phtml')
-            	->addViewVars(array('unlockDate' => $this->getUnlockDate()))
             	->send();
-        }
-        
+        }else{
+            $this->save();    
+        }    
     }
     
     public function loginSuccess(){
@@ -66,6 +60,7 @@ class Model_User extends Model_Base_User
         $this->unlock();
     }
     
+
     public function unlock()
     {
         /*
@@ -81,9 +76,7 @@ class Model_User extends Model_Base_User
     
     public function resetRequest()
     {
-        $this->reset_code = sha1(uniqid());
-        $this->reset_request_date = date('c');
-        $this->save();
+        $this->_reset();
         
         // send email to user
         $email = new App_Mail_Alert();
@@ -94,34 +87,73 @@ class Model_User extends Model_Base_User
     
     public function register(Model_Group $group)
     {
-        $this->registration_code = sha1(uniqid());
         $this->registration_date = date('c');
         $this->Groups[] = $group;
-        $this->save();
+        $this->updateDetails();
+    }
+    
+    public function updateDetails()
+    {
+        // get old values of modified fields
+        $modified = $this->getModified(true);
         
-        // send email to user
-        $email = new App_Mail_Alert();
-        $email->setUser($this)
-            ->setViewScript('alert/_activate.phtml')
-            ->send();
+        if(array_key_exists('email', $modified)){
+            
+            $this->activation_code = sha1(uniqid());
+            $this->activation_email = $this->email;
+            $dummyUser = clone $this;
+            $this->email = $modified['email'];
+            $this->save();
+            
+            // send email to user
+            $email = new App_Mail_Alert();
+            $email->setUser($dummyUser)
+                ->setViewScript('alert/_activate.phtml')
+                ->send();
+        }else{
+            $this->save();
+        }
+        
+        
     }
     
     public function activate()
     {
         $this->activation_code = null;
-        $this->activation_date = date('c');
-        $this->save();
-        
+        $this->last_activation_date = date('c');
+        $this->email = $this->activation_email;
+        $this->activation_email = null;
+
+        if(empty($this->first_activation_date)){
+            $this->first_activation_date = $this->last_activation_date;
+            $this->save();
+            $this->Groups[0]->requestMembership($this);
+        }else{
+            $this->save();
+        }
+
         $this->Groups[0]->requestMembership($this);
-    }
+	}
+
+    // Protected
     
-    public function getUnlockDate()
+    protected function _reset()
     {
-        return date('l jS F Y \a\t H:i', strtotime($this->last_login_attempt_date) + $this->_lockOut->unlockInterval);
+        $this->reset_code = sha1(uniqid());
+        $this->reset_request_date = date('c');
+        $this->save();
     }
     
     protected function _locked(){
         return ($this->num_login_attempts >= $this->_lockOut->maxAttempts);
+    }
+    
+    
+    // Accessors
+    
+    protected function getUnlockDate()
+    {
+        return strtotime($this->last_login_attempt_date) + $this->_lockOut->unlockInterval;
     }
     
     protected function setPassword($password)

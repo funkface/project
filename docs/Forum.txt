@@ -5,7 +5,7 @@ Account
 		logged in users see shorter registration.
 	Login, with brute force protection lock-out; logout
 	Password recovery
-	Edit details
+	Edit details, if email address is changed, new address must be activated
 	Upload picture
 	Edit signature
 	Email alert settings, moderators section

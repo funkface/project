@@ -2,7 +2,7 @@
 <p>Dear <?php echo $this->to->first_name; ?>,</p>
         
 <p>Your user account has been locked due to too many failed login attempts.<br/>
-Your account will be automatically unlocked on <?php echo $this->unlockDate; ?></p>
+Your account will be automatically unlocked on <?php echo $this->friendlyDateWithTime($this->to->unlockDate); ?></p>
 
 <p>If you're having trouble logging in because you've forgotten your password, 
 click the link below to reset your password.</p>

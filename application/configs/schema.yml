@@ -1,12 +1,93 @@
 detect_relations: true
+
+Project:
+    columns:
+        created_user_id:
+            type: integer
+            notnull: true
+        created_date: timestamp
+        title: string(127)
+    relations:
+        Creator:
+            class: User
+            local: created_user_id
+    
+Milestone:
+    columns:
+        project_id:
+            type: integer
+            notnull: true
+        due_date: timestamp
+        created_user_id:
+            type: integer
+            notnull: true
+        created_date: timestamp
+        completed_user_id: 
+            type: integer
+            notnull: true
+        completed_date: timestamp
+        title: string(127)
+        notes: string(1023)
+    relations:
+        Creator:
+            class: User
+            local: created_user_id
+        Completor:
+            class: User
+            local: completed_user_id
+    
+List:
+    columns:
+        project_id:
+            type: integer
+            notnull: true
+        milestone_id: integer
+        created_user_id:
+            type: integer
+            notnull: true
+        created_date: timestamp
+        title: string(127)
+    relations:
+        Creator:
+            class: User
+            local: created_user_id
+        
+Todo:
+    columns:
+        list_id:
+            type: integer
+            notnull: true
+        created_user_id:
+            type: integer
+            notnull: true
+        created_date: timestamp
+        completed_user_id: 
+            type: integer
+            notnull: true
+        completed_date: timestamp
+        weight:
+            type: integer
+            notnull: true
+            default: 0
+        title: string(127)
+        notes: string(1023)
+    relations:
+        Creator:
+            class: User
+            local: created_user_id
+        Completor:
+            class: User
+            local: completed_user_id
             
 User:
     columns:
         email: string(127)
         password: string(40)
         registration_date: timestamp
-        activation_date: timestamp
         activation_code: string(40)
+        activation_email: string(127)
+        first_activation_date: timestamp
+        last_activation_date: timestamp
         last_login_date: timestamp
         last_login_attempt_date: timestamp
         num_login_attempts: integer
@@ -17,7 +98,7 @@ User:
         member_no: string(63)
         avatar: string(32)
         signature: string(255)
-    relatations:
+    relations:
         Groups:
             class: Group
             local: user_id
@@ -31,7 +112,10 @@ User:
             foreignAlias: To
         SentMessages:
             class: Message
+            local: id
+            type: many
             foreign: from_user_id
+            foreignType: one
             foreignAlias: From
         
 UserGroup:
@@ -49,21 +133,13 @@ UserGroup:
             values: [request, member, leader]
             default: request
         
-Group:
-    columns:
-        title: 
-            type: string(63)
-            notblank: true
-        description: string(127)
-        abbr: string(8)
-        
 Message:
     columns:
         type:
             type: enum
             values: [message, request, report]
         from_user_id: integer
-        title: 
+        subject:
             type: string(63)
             notblank: true
         body: string(102400)
@@ -81,4 +157,3 @@ UserMessage:
         status:
             type: enum
             values: [new, read, deleted]
-        
