@@ -1,2 +1,25 @@
-<p><?php echo $this->formResponse; ?></p>
+<div id="left" class="account">
+<h2><?php echo $this->pageTitle('Request a password reset link'); ?></h2>
+<p>If you have forgotten your password or if your account has been locked
+due to too many unsuccessful login attempts, You may request
+a password reset link be sent to your email inbox.</p>
+<h3>Please note</h3>
+<p>Please submit this form only once.
+Each time you submit this form a new reset code will be assigned to you, 
+invalidating any previous codes that you may have been issued.</p>
+<h3>Password reset procedure</h3>
+<ol>
+<li>Complete the password reset request form.</li>
+<li>Check your email inbox, the email can take some time to arrive, 
+depending on your email set-up, so please be patient.</li>
+<li>Click the password reset link in the password reset email which will
+take you to the password reset page.</li>
+<li>Complete the form on the password rest page to reset your password</li>
+</ol>
+</div>
+<div id="right" class="account">
+<h2>Password reset request form</h2>
+<?php echo $this->messages(); ?>
+<p>Fields marked with * are mandatory and must be filled in.</p>
 <?php echo $this->form; ?>
+</div>

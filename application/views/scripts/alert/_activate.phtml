@@ -1,0 +1,15 @@
+<?php $this->placeholder('subject')->set('Account Activation'); ?>
+<p>Dear <?php echo $this->to->fullName; ?>,</p>
+        
+<p>In order to use this email address to login to your account you must activate it.<br/>
+Click the link below to confirm that this is your email address and activate it for use with your account.
+</p>
+
+<a href="<?php echo $url = $this->absoluteUrl(array(
+    'module' => 'account',
+    'action' => 'activate', 
+    'code' => $this->to->activation_code
+), 'account'); ?>"><?php echo $url; ?></a>
+
+<p>Best regards,<br/>
+Tidy Mind</p>

@@ -1,0 +1,8 @@
+<?php $this->pageTitle('My Account')->pageTitle('My Messages')->pageTitle($this->message->subject); ?>
+<div id="left" class="group forum"><?php echo $this->action('navigation', 'message', 'account'); ?></div>
+<div id="right">
+<?php echo $this->messages(); ?>
+<?php echo $this->partial('message/_viewMessage2.phtml', array(
+    'message' => $this->message, 'toUser' => $this->toUser
+)); ?>
+</div>

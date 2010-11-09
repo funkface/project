@@ -1,6 +1,14 @@
 <?php
 class App_Filter_CanonicaliseDate implements Zend_Filter_Interface
 {
+    protected $dateFormat = 'Y-m-d H:i:s';
+    
+    public function __construct($dateFormat)
+    {
+        if(!empty($dateFormat)){
+            $this->dateFormat = $dateFormat;
+        }
+    }
     
     public function filter($value)
     {
@@ -11,7 +19,7 @@ class App_Filter_CanonicaliseDate implements Zend_Filter_Interface
             return $value;
         }
         
-        $date = date('Y-m-d H:i:s', $date);
+        $date = date($this->dateFormat, $date);
         
         return $date;
     }

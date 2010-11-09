@@ -17,4 +17,127 @@ class Model_UserTable extends Doctrine_Table
         return Doctrine_Core::getTable('Model_User');
     }
     
+    public function findUsersByFullNamesAndGroups(array $userNames, Doctrine_Collection $groups)
+    {
+        $groupIds = array();
+        foreach($groups as $group){
+            $groupIds[] = $group->id;
+        }
+        
+        $q = $this->createQuery('u')
+            ->innerJoin('u.UserGroup ug')
+            ->whereIn('ug.group_id', $groupIds);
+            
+        $or = $params = array();
+        foreach($userNames as $name){
+            
+            $names = preg_split('/ +/', $name);
+            $params[] = array_pop($names);
+            $params[] = implode(' ', $names);
+            
+            $or[] = '(u.last_name = ? AND u.first_name = ?)';
+        }
+        $or = implode(' OR ', $or);
+        $q->andWhere($or, $params);
+        
+        //die(print_r(array('query' => $q->getSqlQuery(), 'params' => $params, 'groupIds' => $groupIds), true));
+        
+        return $q->execute();          
+    }
+    
+    public function findUsersByPartialNameAndGroups($userName, Doctrine_Collection $groups)
+    {
+        $groupIds = array();
+        foreach($groups as $group){
+            $groupIds[] = $group->id;
+        }
+        
+        $q = $this->createQuery('u')
+            ->innerJoin('u.UserGroup ug')
+            ->whereIn('ug.group_id', $groupIds);
+            
+        $userNames = preg_split('/ +/', $userName);
+
+        $or = $params = array();
+        foreach($userNames as $name){
+            
+            $or[] = 'u.last_name LIKE ? OR u.first_name LIKE ?';
+            
+            $name = $name . '%';
+            $params[] = $name;
+            $params[] = $name;
+        }
+        $or = implode(' OR ', $or);
+        $q->andWhere($or, $params);
+        
+        return $q->execute();          
+    }
+    
+    public function setRoleForUserAndGroup($role, Model_User $user, Model_Group $group)
+    {
+        return Doctrine_Query::create()
+            ->update('Model_UserGroup')
+            ->set('role', '?', (string)$role)
+            ->where('user_id = ?', $user->id)
+            ->andWhere('group_id = ?', $group->id)
+            ->execute();
+    }
+    
+    public function findByEmail($email)
+    {
+        return $this->createQuery('u')
+            ->where('u.email = ?', $email)
+            ->orWhere('u.activation_email = ?', $email)
+            ->fetchOne();
+    }
+    
+    public function findByActivationEmailWithActivation($email)
+    {
+        return $this->createQuery('u')
+            ->where('u.activation_email = ?', $email)
+            ->AndWhere('u.activation_code IS NOT NULL')
+            ->fetchOne();
+    }
+    
+    public function findByNullPassword()
+    {
+        return $this->createQuery('u')
+            ->where('u.password IS NULL')
+            ->execute();
+    }
+    
+    /*
+     * Returns user regardless of group, necessary as we load the user for the membership request page
+     */
+    public function findOneByIdWithRoleForGroup($user_id, Model_Group $group)
+    {
+        $config = Zend_Registry::get('config');
+        $adapter = Zend_Db::factory($config->doctrine->dsn->adapter, $config->doctrine->dsn);
+        
+        $userSelect = $adapter->select()
+            ->from(array('u' => 'user'))
+            ->joinLeft(array('ug' => 'user_group'), 'u.id = ug.user_id AND ug.group_id = ' . $group->id, array('role'));
+        
+        $select = $adapter->select()
+            ->from(array('u' => $userSelect), array());
+
+        $from = $select->assemble();
+        $from = substr($from, 5);
+            
+        $query = new Doctrine_RawSql();
+        $query->addComponent('u', 'Model_User u')
+            ->select('{u.*}, {u.role}')
+            ->from($from)
+            ->where('u.id = ?', $user_id);
+            
+        $collection = $query->execute();
+        
+        if($collection instanceof Doctrine_Collection){
+            return $collection->getFirst();
+        }
+        
+        return false;
+    }
+    
+    
 }

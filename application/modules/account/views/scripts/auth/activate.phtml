@@ -1,0 +1,33 @@
+<?php if($this->form): ?>
+<div id="left" class="account">
+<h2><?php echo $this->pageTitle('Account activation'); ?></h2>
+<h3>Please fill out this form to activate your account:</h3>
+<ol>
+<?php if($this->group): ?>
+<li>Once your account has been activated the <?php $this->escape($this->group->title); ?> leader will
+be asked to accept you into the <?php echo $this->groupAbbr($this->group); ?> group.</li>
+<li>If you are accepted, you'll then be able to use the <?php echo $this->groupAbbr($this->group);
+?> forum and message <?php echo $this->groupAbbr($this->group); ?> members.</li>
+<?php else: ?>
+<li>Once your account has been activated the leader of your chosen group will
+be asked to accept you into their group.</li>
+<li>If you are accepted, you'll then be able to use the group forum and message group members.</li>
+<?php endif; ?>
+</ol>
+</div>
+<div id="right" class="account">
+<h2>Activation form</h2>
+<p><?php echo $this->formResponse; ?></p>
+<p>Fields marked with * are mandatory and must be filled in.</p>
+<?php echo $this->form; ?>
+</div>
+<?php else: ?>
+<div id="left" class="account">
+<h2><?php echo $this->pageTitle('Account activation'); ?></h2>
+<h3>Activation link invalid</h3>
+<p>This is most common when clicking an old activation link that has already been used to activate your account.</p>
+<p>If you have already activated your account but are having trouble logging in, try using the <a href="<?php 
+echo $this->url(array('action' => 'forgotten', 'code' => null), 'account');
+?>">reset password form</a> instead.</p>
+</div>
+<?php endif; ?>

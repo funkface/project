@@ -1,0 +1,22 @@
+<?php $this->pageTitle($this->group->title)->pageTitle('Events'); ?>
+<div id="left" class="group <?php echo $this->group->abbr; ?>">
+
+    <h2 class="intro">
+        <?php echo $this->escape($this->group->title); ?> 
+        (<?php echo $this->groupAbbr($this->group); ?>)
+    </h2>
+    <div>
+        <h3>Welcome to the <?php echo $this->escape($this->group->description); ?> events page.</h3>
+        <p>Each of our events is a great chance to get involved. 
+        Find out what's happening.</p>
+    </div>
+
+    <div id="events">
+        <h2><?php echo $this->groupAbbr($this->group); ?> Events</h2>
+        <?php echo $this->action('list', 'event', null, array('id' => $this->group->id)); ?>
+    </div>
+
+</div>
+<div id="right" class="group">
+    <?php echo $this->action('detail', 'event', null, array('id' => $this->eventId, 'groupId' => $this->group->id)); ?>
+</div>

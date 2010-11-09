@@ -1,0 +1,5 @@
+<ol>
+<?php foreach($this->users as $user): ?>
+<li><?php echo $this->escape($user->fullName); ?></li>
+<?php endforeach; ?>
+</ol>

@@ -6,6 +6,7 @@ class App_View_Control_Grid extends App_View_Control_Abstract
     protected $_numPageLinks = 9;
     protected $_sortBy;
     protected $_sortableColumns = array();
+    protected $_defaultColumn;
     protected $_query;
     protected $_urlCallback;
     
@@ -49,7 +50,18 @@ class App_View_Control_Grid extends App_View_Control_Abstract
         return $this;
     }
     
-    public function setQuery(Doctrine_Query $query)
+    public function setDefaultColumn($colName)
+    {
+        $this->_defaultColumn = (string)$colName;
+        return $this;
+    }
+    
+    public function getDefaultColumn()
+    {
+        return ($this->_defaultColumn == null) ? $this->_sortableColumnNames[0] : $this->_defaultColumn;
+    }
+    
+    public function setQuery(Doctrine_Query_Abstract $query)
     {
         $this->_query = $query;
         return $this;
@@ -60,17 +72,22 @@ class App_View_Control_Grid extends App_View_Control_Abstract
         $this->_urlCallback = $callback;
         return $this;
     }
-    
+
     protected function _preRender()
     {
         if($this->_sortBy == null){
-            $this->_sortBy = $this->_sortableColumnNames[0];
+            $this->setSortBy($this->getDefaultColumn());
         }
         
-        $orderBy = $this->_sortableColumns[$this->_sortBy] . ($this->_descending ? ' DESC' : ' ASC');
+        $orderBy = (array)$this->_sortableColumns[$this->_sortBy];
+        foreach($orderBy as &$column){
+             $column .= ($this->_descending ? ' DESC' : ' ASC');
+        }
+        $orderBy = implode(', ', $orderBy);
         $this->_query->orderBy($orderBy);
         
         $pager = new Doctrine_Pager($this->_query, $this->_currentPage, $this->itemsPerPage);
+        //die($pager->getQuery()->getSqlQuery());
         $rows = $pager->execute();
         
         $columns = array();
@@ -79,12 +96,14 @@ class App_View_Control_Grid extends App_View_Control_Abstract
             if($this->_sortBy == $column && !$this->_descending){
                 $class = 'desc';
                 $colSort = '-' . $column;
+                $title = 'Sort by "' . $column . '" in descending order';
             }else{
                 $class = 'asc';
                 $colSort = $column;
+                $title = 'Sort by "' . $column . '" in ascending order';
             }
             
-            $columns[$column] = array('class' => $class, 'url' => $this->getUrl(
+            $columns[$column] = array('class' => $class, 'title' => $title, 'url' => $this->getUrl(
                 $this->_currentPage, 
                 $this->_itemsPerPage,
                 $colSort

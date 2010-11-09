@@ -1,0 +1,18 @@
+<?php $this->placeholder('subject')->set(
+	strtoupper($this->group->abbr) . ' Membership Request Received'
+); ?>
+<p>Dear <?php echo $this->to->fullName; ?>,</p>
+        
+<p>A request to join the <?php echo $this->escape($this->group->title); 
+?> on website has been received from <?php 
+echo $this->escape($this->message->From->fullName); ?>.</p>
+
+<p>Please click the link below to view the request.</p>
+
+<a href="<?php echo $url = $this->absoluteUrl(array(
+    'action' => 'view', 
+    'id' => $this->message->id
+), 'message'); ?>"><?php echo $url; ?></a>
+
+<p>Best regards,<br/>
+Tidy Mind</p>

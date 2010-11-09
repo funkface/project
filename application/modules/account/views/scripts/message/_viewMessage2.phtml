@@ -1,0 +1,83 @@
+<?php if(!$this->toUser): ?><dl class="recipients">
+<dt>To:</dt>
+<?php foreach($this->message->To as $recipient): ?>
+<dd><img src="<?php echo $this->displayUploadedImage($recipient->avatar, 'teeny');
+?>" alt="<?php echo $this->escape($recipient->fullName); ?>"/>
+<?php echo $this->escape($recipient->fullName); ?></dd>
+<?php endforeach; ?>
+</dl>
+<?php endif; ?>
+
+<table id="posts"><tbody>
+
+<tr>
+    <td class="identity"><ul>
+        <li><img src="<?php echo $this->displayUploadedImage($this->message->From->avatar, 'thumb');
+        ?>" alt="<?php echo $this->escape($this->message->From->fullName); ?>"/></li>
+        <li><?php echo $this->escape($this->message->From->fullName); ?></li>
+    </ul></td>
+    
+    <td class="post"><ul>
+    
+    <?php switch($this->message->type): case 'request': ?>
+    
+        <li><ul>
+            <li class="title"><?php echo strtoupper($this->message->subject); ?> membership request</li>
+            <li><?php echo $this->terseDateWithDayAndTime($this->message->sent_date); ?></li>
+        </ul></li>
+        
+        <li class="post">
+            <dl>
+                <dt>Full name</dt>
+                <dd><?php echo $this->escape($this->message->From->fullName); ?></dd>
+                <dt>Email address</dt>
+                <dd><?php echo $this->escape($this->message->From->email); ?></dd>
+            </dl>
+        </li>
+        
+        <li class="title">Membership actions</li>
+        <?php if($this->message->status == 'deleted'): ?>
+        <li class="post">Request already processed</li>
+        <?php else: ?>
+        <li class="post"><a href="<?php echo $this->url(array(
+            'action' => 'view',
+            'id' => $this->message->id,
+            'request' => 'approve'
+        ), 'messages'); ?>">Approve request</a></li>
+        <?php endif; ?>
+        
+    <?php break; default: ?>
+    
+        <li><ul>
+            <li class="title"><?php echo $this->escape($this->message->subject); ?></li>
+            <li><?php echo $this->terseDateWithDayAndTime($this->message->sent_date); ?></li>
+        </ul></li>
+
+        <li class="post"><?php echo $this->message->body; ?></li>
+        
+        <?php if($this->message->Images->count() > 0):
+        
+        $this->headScript()->appendFile($this->baseUrl('js/jquery.colorbox-min.js'))
+            ->appendFile($this->baseUrl('js/colorbox-setup.js'));
+            
+        $this->headLink()->appendStylesheet($this->baseUrl('css/colorbox.css'), 'screen,projection');
+        
+        ?><li class="images"><ul>
+        <?php foreach($this->message->Images as $i => $image): ?>
+            <li><a class="colorbox" title="Message &quot;<?php echo $this->escape($this->message->subject);
+            ?>&quot; Image <?php echo $i + 1; ?>" rel="message<?php 
+            echo $this->message->id; ?>" href="<?php 
+            echo $this->displayUploadedImage($image->image); 
+            ?>"><img src="<?php echo $this->displayUploadedImage($image->image, 'small');
+            ?>" alt="Image <?php echo $i + 1; ?>"/></a></li>
+        <?php endforeach;?>
+        </ul></li><?php endif; ?>
+        
+        <li class="signature"><?php echo $this->message->From->signature; ?></li>
+        
+    <?php endswitch; ?>
+        
+    </ul></td>
+</tr>
+
+</tbody></table>

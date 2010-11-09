@@ -1,0 +1,19 @@
+<?php $this->placeholder('subject')->set('Locked Account Notification'); ?>
+<p>Dear <?php echo $this->to->fullName; ?>,</p>
+        
+<p>Your user account has been locked due to too many failed login attempts.<br/>
+Your account will be automatically unlocked on <?php echo $this->friendlyDateWithTime($this->to->unlockDate); ?></p>
+
+<p>If you're having trouble logging in because you've forgotten your password, 
+click the link below to reset your password.</p>
+
+<a href="<?php echo $url = $this->absoluteUrl(array(
+	'action' => 'reset', 
+	'code' => $this->to->reset_code
+), 'account'); ?>"><?php echo $url; ?></a>
+
+<p>If you suspect someone else caused your account to become locked please 
+contact support immediately by replying to this email.</p>
+
+<p>Best regards,<br/>
+Tidy Mind</p>

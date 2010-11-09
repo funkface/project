@@ -20,11 +20,24 @@ class Model_Group extends Model_Base_Group
         if($leaders->count() > 0){
             
             $message = new Model_Message();
-            $message->To = $leaders;
             $message->From = $user;
-            $message->subject = $this->abbr . ' Group membership request';
+            $message->subject = $this->abbr;
             $message->type = 'request';
-            $message->save();
+            
+            foreach($leaders as $leader){
+                $message->To->add($leader);
+            }
+
+            $message->send();
+            
+            foreach($leaders as $leader){
+            	
+            	$email = new App_Mail_Alert();
+            	$email->setUser($leader)
+            		->addViewVars(array('message' => $message, 'group' => $this))
+	            	->setViewScript('alert/_membership_request.phtml')
+	            	->send();
+            }
         }
     }
     
@@ -46,14 +59,16 @@ class Model_Group extends Model_Base_Group
     public function findUsers($role)
     {
         $q = Doctrine_Query::create()
-            ->from('User u')
-            ->innerJoin('UserGroup g')
-            ->where('g.Group = ', $this);
+            ->select('u.*')
+            ->from('Model_User u')
+            ->innerJoin('u.UserGroup g')
+            ->where('g.group_id = ?', $this->id);
             
         if($role){
-            $q->andWhere('g.role = ', $role);
+            $q->andWhere('g.role = ?', $role);
         }
             
         return $q->execute();
     }
+
 }

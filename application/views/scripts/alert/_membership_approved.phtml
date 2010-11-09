@@ -1,0 +1,15 @@
+<?php $this->placeholder('subject')->set(strtoupper($this->group->abbr) . ' Membership Request Approved'); ?>
+<p>Dear <?php echo $this->to->fullName; ?>,</p>
+        
+<p>Your request to join the <?php echo $this->escape($this->group->title); 
+?> on the website has been approved.</p>
+
+<p>You can get started on the forum straight away by clicking the link below.</p>
+
+<a href="<?php echo $url = $this->absoluteUrl(array(
+    'action' => 'index', 
+    'abbr' => $this->group->abbr
+), 'forum'); ?>"><?php echo $url; ?></a>
+
+<p>Best regards,<br/>
+Tidy Mind</p>

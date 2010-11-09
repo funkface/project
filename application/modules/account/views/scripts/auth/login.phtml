@@ -1,1 +1,35 @@
+<?php if($this->redirect): ?>
+<div id="left" class="account">
+
+<h2>Registration</h2>
+<p>In order to login you must be registered. 
+Registration takes only a few moments.</p>
+<p><a href="<?php echo $this->url(array('action' => 'register') + $this->urlParams, 'account');
+?>">Register now</a></p>
+<h2>I've forgotten my password</h2>
+<p>If you've forgotten your password, you may reset it by clicking this link:</p>
+<p><a href="<?php echo $this->url(array('action' => 'forgotten') + $this->urlParams, 'account');
+?>">Reset password</a></p>
+<h2>I can't find my activation email</h2>
+<p>If you have lost your account activation email, or didn't receive it for any reason,
+you may request that it be resent by clicking this link:</p>
+<p><a href="<?php echo $this->url(array('action' => 'resend-activation') + $this->urlParams, 'account');
+?>">Resend activation email</a></p>
+</div>
+
+<div id="right" class="account">
+<h2><?php echo $this->pageTitle('Account login'); ?></h2>
+<?php echo $this->messages(); ?>
+<?php switch($this->redirect->params['module']): case 'account': ?>
+<p>To access your account you must login.</p>
+<?php break; case 'forum': ?>
+<p>To access the <?php echo strtoupper($this->redirect->params['abbr']); ?> forum you must login.</p>
+<?php break; default: ?>
+<p>Please login to proceed.</p>
+<?php endswitch; ?>
+<p>Fields marked with * are mandatory and must be filled in.</p>
 <?php echo $this->form; ?>
+</div>
+<?php else: ?>
+<p>Please enable cookies to login.</p>
+<?php endif; ?>

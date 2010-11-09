@@ -1,8 +1,15 @@
 .project
 .buildpath
 .settings
+.htaccess
 
-application/config/application_env.txt
+application/configs/application_env.txt
+
+library/phpBB/files/*
+library/phpBB/cache/*
+!library/phpBB/cache/.htaccess
+!library/phpBB/cache/index.htm
 
 temp/*
 public/uploads/*
+public/uploads/images/*

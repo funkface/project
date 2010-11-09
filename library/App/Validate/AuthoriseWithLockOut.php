@@ -10,7 +10,7 @@ class App_Validate_AuthoriseWithLockOut extends App_Validate_Authorise
         
         if($valid){
             
-            if(!$records[0]->isActive() || $records[0]->isLocked()){ 
+            if($records[0]->isLocked()){ 
                 $this->_error(self::NOT_AUTHORISED);
             }else{
                 $this->_writeSession();

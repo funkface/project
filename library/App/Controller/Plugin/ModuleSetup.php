@@ -15,14 +15,18 @@ class App_Controller_Plugin_ModuleSetup extends Zend_Controller_Plugin_Abstract
         }
 
         $moduleName = $request->getModuleName();
-
-        if ($moduleName != 'default') {
-
-            Zend_Layout::startMvc(array());
-            $layout = Zend_Layout::getMvcInstance();
-            $layout->setLayoutPath('../application/modules/' . $moduleName . '/views/layouts/')
-            	->setLayout($moduleName);
-
+        $controllerName = $request->getControllerName();
+        
+        if($moduleName == 'account' && $controllerName != 'auth'){
+            
+            $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+            $viewRenderer->view->account = true;
+            
+        }else if($moduleName == 'admin'){
+            
+            $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+            $viewRenderer->view->admin = true;
+            
         }
 
         return $request;

@@ -1,0 +1,14 @@
+<?php if($this->userLoggedIn): ?>
+Logged in as <dfn><?php echo $this->user->fullName; ?></dfn>
+<ul>
+    <li><a href="<?php echo $this->url(array('module' => 'account'), 'account'); ?>">My Account</a></li>
+    <li><a href="<?php echo $this->url(array('action' => 'inbox'), 'messages'); 
+    ?>"><?php echo $this->user->getNewMessageCount(); ?> new messages</a></li>
+    <li><a href="<?php echo $this->url(array('controller' => 'auth', 'action' => 'logout'), 'account'); ?>">Logout</a></li>
+    <?php if($this->user->isLeader()): ?>
+    <li><a href="<?php echo $this->url(array('module' => 'admin'), 'admin'); ?>">Admin</a></li>
+    <?php endif; ?>
+</ul>
+<?php else:
+    echo $this->form; 
+endif;?>

@@ -1,5 +1,4 @@
 <?php
-
 // Define path to application directory
 defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
@@ -9,12 +8,14 @@ if(!defined('APPLICATION_ENV')){
     if(getenv('APPLICATION_ENV')){
         define('APPLICATION_ENV', getenv('APPLICATION_ENV'));
     }else{
+        /*
         // SetEnv only works in .htaccess for Apache 1.3.7 and later
         $envPath = APPLICATION_PATH . '/configs/application_env.txt';
         $appEnv = '';
         if(file_exists($envPath)){
         	$appEnv = trim(file_get_contents($envPath));
         }
+        */
         if(!empty($appEnv)){
             define('APPLICATION_ENV', $appEnv);
         }else{

@@ -1,9 +1,23 @@
 <?php
 class App_Mail extends Zend_Mail
 {
+    protected $_config;
     protected $_view;
     protected $_viewScript;
     protected $_viewVars;
+    
+    public function __construct($charset = 'iso-8859-1')
+    {
+        parent::__construct($charset);
+        
+        $this->_config = Zend_Registry::get('config')->email;
+        $this->_init();
+    }
+    
+    protected function _init()
+    {
+        
+    }
     
     public function send($transport = null)
     {
@@ -102,5 +116,23 @@ class App_Mail extends Zend_Mail
 
         return $this->_view;
     }
+    
+    /**
+     * Set Reply-To Header
+     *
+     * @param string $email
+     * @param string $name
+     * @return App_Mail
+     * @throws null. Changed from superclass, now simply overwrites.
+     */
+    /*public function setReplyTo($email, $name = null)
+    {
+        $email = $this->_filterEmail($email);
+        $name  = $this->_filterName($name);
+        $this->_replyTo = $email;
+        $this->_storeHeader('Reply-To', $this->_formatAddress($email, $name), false);
+
+        return $this;
+    }*/
     
 }

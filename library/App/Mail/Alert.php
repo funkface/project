@@ -1,5 +1,5 @@
 <?php
-class App_Mail_Alert extends App_Mail
+class App_Mail_Alert extends App_Mail_Automated
 {
     protected $_user;
     
@@ -20,14 +20,12 @@ class App_Mail_Alert extends App_Mail
     
     protected function _preRender()
     {
-        $config = Zend_Registry::get('config')->email->alert;
+        $config = $this->_config->alert;
         $user = $this->getUser();
 
-        $this->addTo($user->email, $user->first_name . ' ' . $user->last_name);
-        $this->setFrom($config->from->address, $config->from->name);
-        $this->setReplyTo($config->from->address, $config->from->name);
+        $email = $config->useTestAddress ? $config->testAddress : $user->email;
+        $this->addTo($email, $user->fullName);
 
-        $this->addViewVars(array('to' => $user, 'from' => $config->from));
-    }
-            
+        $this->addViewVars(array('to' => $user));
+    }         
 }

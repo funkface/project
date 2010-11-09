@@ -1,0 +1,13 @@
+<?php $this->pageTitle('My Account')->pageTitle('My Messages'); ?>
+<div id="left" class="group forum"><?php echo $this->action('navigation', 'message', 'account'); ?></div>
+<div id="right">
+<?php if($this->message):?>
+<h2><?php echo $this->pageTitle('New message "' . $this->message->subject . '"'); ?></h2>
+<div id="message_preview">
+<?php echo $this->partial('message/_viewMessage2.phtml', array('message' => $this->message)); ?>
+</div>
+<?php else: ?>
+<h2><?php echo $this->pageTitle('New message'); ?></h2>
+<p>Fields marked with * are mandatory and must be filled in.</p>
+<?php endif; echo $this->form; ?>
+</div>

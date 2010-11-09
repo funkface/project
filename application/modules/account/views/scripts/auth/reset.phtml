@@ -1,2 +1,38 @@
-<p><?php echo $this->formResponse; ?></p>
+<?php if($this->form): ?>
+<div id="left" class="account">
+<h2>Resetting Your Password</h2>
+<p>Use this form to reset your password.</p>
+<h3>Please be careful</h3>
+<ol>
+<li>Setting your password to something you won't remember can mean you won't be able to log in.</li>
+<li>Should you find you can't log in, you can use the password reset request form again
+to request a new password reset link.</li>
+</ol>
+</div>
+
+<div id="right" class="account">
+<h2><?php echo $this->pageTitle('Password Reset'); ?></h2>
+<?php echo $this->messages(); ?>
+<p>Fields marked with * are mandatory and must be filled in.</p>
 <?php echo $this->form; ?>
+</div>
+<?php else: ?>
+<div id="left" class="account">
+<h2><?php echo $this->pageTitle('Invalid Password Reset Link'); ?></h2>
+<p>Sorry, the code contained in that reset link has become invalid.</p>
+<h3>Possible causes</h3>
+<ol>
+<li>Password reset links expire after 24 hours.</li>
+<li>Emails can take some time to arrive in your inbox, depending on your email set-up, please be patient.</li>
+<li>Each time you submit the password reset request form a new reset code will be assigned to you, 
+invalidating any previous codes that you may have been issued.</li>
+<li>Not respecting points 2 and 3 can lead to frustration
+as the site may seem to send out a string of invalid reset codes.</li>
+</ol>
+</div><div id="right" class="account">
+<h2>Password Reset Request</h2>
+<p>if you would like to try resetting your password again
+<a href="<?php echo $this->url(array('action' => 'forgotten'));
+?>">click here to request another password reset link</a>.</p>
+</div>
+<?php endif; ?>

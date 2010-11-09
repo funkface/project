@@ -1,0 +1,11 @@
+<dl title="message navigation">
+    <?php foreach($this->nav as $heading): ?>
+    <dt><?php echo $this->escape($heading->label); ?></dt>
+    <?php foreach($heading->getPages() as $item): ?>
+    <dd<?php if($item->isActive()): ?> class="active"<?php endif; 
+    ?>><a<?php if($item->confirm): ?> onclick="return confirm('Are you sure you want to <?php
+    echo $this->escapeInlineJsString($item->title); ?>?');"<?php endif; ?> title="<?php 
+    echo $this->escape($item->title); ?>" href="<?php echo $item->getHref(); 
+    ?>"><?php echo $item->label; ?></a></dd>
+    <?php endforeach; endforeach; ?>
+</dl>

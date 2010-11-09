@@ -1,0 +1,24 @@
+<div id="left" class="account">
+<h2><?php echo $this->pageTitle('Resend activation email'); ?></h2>
+<p>If you have lost your account activation email, or didn't receive it for any reason, 
+you may request that it be sent to you again.</p>
+<h3>Please note</h3>
+<p>This form will only work if your account needs activation. 
+If you have already activated your account but are having trouble logging in, try using the <a href="<?php 
+echo $this->url(array('action' => 'forgotten', 'code' => null), 'account');
+?>">reset password form</a> instead.</p>
+<h3>Account activation procedure</h3>
+<ol>
+<li>Complete the resend activation email form.</li>
+<li>Check your email inbox, the email can take some time to arrive, 
+depending on your email set-up, so please be patient.</li>
+<li>Click the activation link in the activation email to activate your account.</li>
+</ol>
+</div>
+
+<div id="right" class="account">
+<h2>Resend activation email form</h2>
+<?php echo $this->messages(); ?>
+<p>Fields marked with * are mandatory and must be filled in.</p>
+<?php echo $this->form; ?>
+</div>

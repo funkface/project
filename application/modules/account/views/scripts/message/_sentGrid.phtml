@@ -1,0 +1,29 @@
+<table>
+    <thead>
+        <tr>
+            <?php foreach($this->columns as $column => $sort): ?>
+            <th class="<?php echo $sort['class']; ?>"><a href="<?php echo $sort['url'] 
+            ?>" title="<?php echo $this->escape($sort['title']); ?>"><?php echo $column; ?></a></th>
+            <?php endforeach; ?>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($this->rows as $message): ?>
+        <tr>
+            <td><?php echo $this->displayRecipients($message->To); ?></td>
+            <td><?php echo $this->escape($message->subject); ?></td>
+            <td><?php echo $this->terseDateWithDayAndTime($message->created_date); ?></td>
+            <td>
+                <a href="<?php echo $this->url(array('action' => 'view', 'id' => $message->id), 'message');
+                ?>">view</a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<div id="pager">Page: <ol><?php 
+$this->pagerControls->setTemplate('<li><a href="{%url}">{%page}</a></li>');
+$this->pagerControls->display();
+?></ol></div>

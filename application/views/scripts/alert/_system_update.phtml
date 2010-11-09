@@ -1,0 +1,18 @@
+<?php $this->placeholder('subject')->set('Website Update'); ?>
+<p>Dear <?php echo $this->to->fullName; ?>,</p>
+<p>Exciting News:</p>
+<p>Our new and improved website is now available.
+The new system is designed to be more user-friendly and secure.</p>
+<p>To ensure that your user profile complies with our new security measures,
+we need to ask you to reset your password. Once you've reset your password using the link below
+you'll be able to enjoy the benefits of our new forums.</p>
+<p>Please click the link below to reset your password:</p>
+
+<a href="<?php echo $url = $this->absoluteUrl(array(
+    'controller' => 'auth',
+	'action' => 'reset', 
+	'code' => $this->to->reset_code
+), 'account'); ?>"><?php echo $url; ?></a>
+
+<p>Best regards,<br/>
+Tidy Mind</p>

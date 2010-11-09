@@ -1,0 +1,73 @@
+<?php $this->pageTitle($this->group->title); ?>
+<div id="left" class="group <?php echo $this->group->abbr; ?>">
+
+    <h2><?php echo $this->escape($this->group->title);
+        ?> <abbr title="<?php echo $this->escape($this->group->title);
+        ?>">(<?php echo strtoupper($this->group->abbr); ?>)</abbr></h2>
+    <div>
+        <h3>Welcome to the <?php echo $this->escape($this->group->description); ?> web page.</h3>
+        <?php echo $this->dspTxt($this->group->intro); ?>
+    </div>
+
+    <div id="events">
+        <h3><a href="<?php echo $this->url(array('action' => 'events'), 'group'); 
+            ?>"><?php echo $this->groupAbbr($this->group); ?> Events</a></h3>
+        <?php echo $this->action('list', 'event', 'default', array('id' => $this->group->id)); ?>
+    </div>
+
+</div>
+<div id="right" class="group <?php echo $this->group->abbr; ?>">
+
+    <h2 id="hero"><?php echo $this->groupAbbr($this->group); ?> Stories</h2>
+
+    <ul id="features">
+    
+        <li id="case-studies">
+            <h3><a <?php if($this->caseStudies->count() > 0 && $this->caseStudies[0]->image): 
+            ?>class="feature" style="background-image: url(<?php 
+            echo $this->baseUrl('uploads/images/heading_' . $this->caseStudies[0]->image); ?>);"
+            <?php endif; ?>href="<?php echo $this->url(array('action' => 'case-studies'), 'group'); 
+            ?>"><?php echo $this->groupAbbr($this->group); ?> Stories</a></h3>
+            <?php if($this->caseStudies->count() < 1): ?>
+            No case studies found.
+            <?php else: ?>
+            <dl>
+            <?php foreach($this->caseStudies as $case): ?>
+                <dt><a href="<?php echo $url = $this->url(array(
+                    'action' => 'case-studies', 
+                    'abbr' => $this->group->abbr, 
+                    'id' => $case->id
+                ), 'groupDetail'); ?>"><?php echo $this->escape($case->title); ?></a></dt>
+                <dd>
+                    <?php echo $this->escape($case->teaser); ?>
+                    <a href="<?php echo $url; ?>">. . . read more</a>
+                </dd>
+            <?php endforeach; ?>
+            </dl>
+            <?php endif; ?>
+        </li>
+        
+        <li id="forum">
+            <h3><a href="<?php echo $this->url(array('action' => 'index', 'abbr' => $this->group->abbr), 'forum');
+            ?>"><?php echo $this->groupAbbr($this->group); ?> Web Forum</a></h3>
+            <?php if($this->posts->count() < 1): ?>
+            No forum posts found.
+            <?php else: ?>
+            <dl>
+            <?php foreach($this->posts as $post): ?>
+                <dt><a href="<?php echo $url = $this->url(array(
+                    'action' => 'topic',
+                    'abbr' => $this->group->abbr,
+                    'id' => $post->Topic->id
+                ), 'forumDetail'); ?>"><?php echo $post->Topic->title; ?></a></dt>
+                <dd>
+                    <?php echo $this->escape($post->teaser); ?>
+                    <a href="<?php echo $url; ?>">. . . read more</a>
+                </dd>
+            <?php endforeach; ?>
+            </dl>
+            <?php endif; ?>
+        </li>
+        
+    </ul>
+</div>

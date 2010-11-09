@@ -1,0 +1,93 @@
+detect_relations: true
+
+Project:
+    columns:
+        created_user_id:
+            type: integer
+            notnull: true
+        created_date: timestamp
+        title: string(127)
+    relations:
+        Creator:
+            class: User
+            local: created_user_id
+    
+Milestone:
+    columns:
+        project_id:
+            type: integer
+            notnull: true
+        due_date: timestamp
+        created_user_id:
+            type: integer
+            notnull: true
+        created_date: timestamp
+        completed_user_id: 
+            type: integer
+            notnull: true
+        completed_date: timestamp
+        title: string(127)
+        notes: string(1023)
+    relations:
+        Creator:
+            class: User
+            local: created_user_id
+        Completor:
+            class: User
+            local: completed_user_id
+    
+List:
+    columns:
+        project_id:
+            type: integer
+            notnull: true
+        milestone_id: integer
+        created_user_id:
+            type: integer
+            notnull: true
+        created_date: timestamp
+        title: string(127)
+    relations:
+        Creator:
+            class: User
+            local: created_user_id
+        
+Todo:
+    columns:
+        list_id:
+            type: integer
+            notnull: true
+        created_user_id:
+            type: integer
+            notnull: true
+        created_date: timestamp
+        completed_user_id: 
+            type: integer
+            notnull: true
+        completed_date: timestamp
+        weight:
+            type: integer
+            notnull: true
+            default: 0
+        title: string(127)
+        notes: string(1023)
+    relations:
+        Creator:
+            class: User
+            local: created_user_id
+        Completor:
+            class: User
+            local: completed_user_id
+            
+User:
+    columns:
+        email: string(127)
+        password: string(40)
+        last_login_date: timestamp
+        last_login_attempt_date: timestamp
+        num_login_attempts: integer
+        reset_request_date: timestamp
+        reset_code: string(40)
+        first_name: string(63)
+        last_name: string(63)
+        

@@ -1,0 +1,28 @@
+<dt id="<?php echo $this->element->getName(); ?>-label">
+    <?php echo $this->formLabel($this->element->getName(), $this->element->getLabel()); ?>
+</dt>
+<dd id="<?php echo $this->element->getName(); ?>-element"><ul>
+    <?php foreach($this->element->getImages() as $key => $image): ?>
+    <li><?php if($path = $this->element->getThumbnail($image->image)): ?>
+            <img src="<?php echo $path; ?>" alt="preview image"/>
+        <?php else: ?>
+            <img src="<?php echo $this->baseUrl('/img/thumb_no_image.gif'); ?>" alt="preview image" style="float: left" />
+        <?php endif; ?>
+            <input type="hidden" name="existing-<?php echo $this->element->getName(); 
+            ?>[]" value="<?php echo $image->image; ?>" />
+            <input type="checkbox" name="delete-<?php echo $this->element->getName(); 
+            ?>-<?php echo $key; ?>" id="delete-<?php echo $this->element->getName(); 
+            ?>-<?php echo $key; ?>" value="1" /><label for="delete-<?php echo $this->element->getName(); 
+            ?>-<?php echo $key; ?>">Delete</label></li>
+    <?php endforeach; ?></ul>
+
+    <input type="file" name="<?php echo $this->element->getName(); 
+    ?>" id="<?php echo $this->element->getName(); 
+    ?>" <?php //echo $this->element->getAttribs() ?> />
+    <input type="submit" value="Upload" id="<?php echo $this->element->getName(); 
+    ?>-upload" name="<?php echo $this->element->getName(); 
+    ?>-upload" />
+
+    <?php if($messages = $this->element->getMessages()) echo $this->formErrors($messages); ?>
+    <p class="description"><?php echo $this->element->getDescription() ?></p>
+</dd>

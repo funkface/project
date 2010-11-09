@@ -7,31 +7,51 @@ class Account_AuthController extends Zend_Controller_Action
      */
     public function init()
     {
-    	$this->_helper->layout->setLayout('noauth');
+    	//$this->_helper->layout->setLayout('noauth');
+    	if($this->getRequest()->getActionName() != 'index'){
+        	$this->view->messages = $this->_helper->flashMessenger->getMessages();
+    	}
     }
 
     public function indexAction()
     {
-        $this->_helper->redirector->gotoRoute(array(
-        	'controller' => 'auth',
-        	'action' => (null === Zend_Auth::getInstance()->getIdentity()) ? 'login' : 'logout'
-        ), 'account');
+        $redirect = array(
+            'controller' => 'auth',
+            'action' => (null === Zend_Auth::getInstance()->getIdentity()) ? 'login' : 'logout',
+        );
+        
+        $session = new Zend_Session_Namespace('loginRedirect');
+        if(isset($session->params['abbr'])){
+            $redirect['group'] = $session->params['abbr'];
+        }
+        
+        $this->_helper->redirector->gotoRoute($redirect, 'account');
     }
 
     public function loginAction()
     {
-        $auth = Zend_Auth::getInstance();
 		$request = $this->getRequest();
+		$abbr = $request->getParam('group');
+		
+		$auth = Zend_Auth::getInstance();
         $form = new Account_Form_Login();
-        $form->setAction($this->_helper->url->simple('login'));
-
+        
+        $formAction = array('controller' => 'auth', 'action' => 'login');
+        if(!empty($abbr)){
+            $formAction['group'] = $abbr;
+            $this->view->group = Model_GroupTable::getInstance()->findOneByAbbr($abbr);
+        }
+        $form->setAction($this->_helper->url->url($formAction, 'account'));
+        $redirect = new Zend_Session_Namespace('loginRedirect');
+        
         if ($request->isPost()) {
 
-            try{
+            //try{
                 
                 if($form->isValid($request->getPost())){
                 	
                 	// Success - redirect
+                	/*
                 	$abbr = $request->getParam('group');
                 	
                 	if($abbr && $group = Model_GroupTable::getInstance()
@@ -41,27 +61,50 @@ class Account_AuthController extends Zend_Controller_Action
 	                	$this->_helper->redirector->gotoRoute(array(
 	                		'group' => $group->abbr
 	                	), 'forum');
-	                	
+	                */
+                                        
+                    //die(print_r($session->deniedRoute, true));
+                    
+                    if(is_array($redirect->params)){
+                        
+                        $params = $redirect->params;
+                        $name = $redirect->name;
+                        $redirect->unsetAll();
+                        
+                        $this->_helper->redirector->gotoRoute($params, $name);
+                        
+                	}else if($abbr){
+                	    
+                	    $this->_helper->redirector->gotoRoute(array(
+                	       'controller' => 'index',
+                	       'abbr' => $abbr
+                	    ), 'forum');
+                	    
                 	}else{
-                		
+                	    
 	                    $this->_helper->redirector->gotoRoute(array(
 	                        'controller' => 'index',
 	                        'action' => 'index'
 	                    ), 'account');
-	                    
                 	}
                 }
                 
-            }catch(Exception $e){
+            //}catch(Exception $e){
                 
-            }
+            //}
             
             // Failed - incorrect details
             $form->addError('Login unsuccessful.');
             $auth->clearIdentity();
         }
         
+        $this->view->redirect = $redirect;
         $this->view->form = $form;
+        $this->view->urlParams = array('controller' => 'auth');
+        if($redirect->params['module'] == 'forum'){
+                $this->view->urlParams['group'] = $redirect->params['abbr'];
+        }
+
     }
 
     public function logoutAction()
@@ -90,22 +133,51 @@ class Account_AuthController extends Zend_Controller_Action
 	
                 	// More secure to not reveal existence of user accounts
                     //$form->email->addError('User account not found');
-                    $this->view->formResponse = 'A password reset link has been sent, check your email in a few minutes';
-                    return;
 
                 }else{
 
                     // store reset details, save and send alert
                     $user->resetRequest();
-                    $this->view->formResponse = 'A password reset link has been sent, check your email in a few minutes';
-                    return;
                 }
+                
+                $this->_helper->flashMessenger->addMessage(
+                    'If we recognised your email address, a password reset link will have been sent, check your email in a few minutes.'
+                );
+                $this->_helper->redirector->gotoRoute(array('action' => 'index'), 'account');
+                
             }
         }
 
-        $this->view->formResponse = 'If you have forgotten your password or if your account has been locked
-        due to too many unsuccessful login attempts, enter your email address here to request that a password reset link
-        be sent to your inbox.';
+        $this->view->form = $form;
+    }
+    
+    public function resendActivationAction()
+    {
+        $form = new Account_Form_ResendActivation();
+        $request = $this->getRequest();
+
+        if($request->isPost()){
+
+            $post = $request->getPost();
+
+            if($form->isValid($post)){
+
+                $user = Model_UserTable::getInstance()->findByActivationEmailWithActivation($post['email']);
+
+                if($user){
+    
+                    // store reset details, save and send alert
+                    $user->resendActivation();
+                }
+                
+                $this->_helper->flashMessenger->addMessage(
+                    'If we recognised your email address and your account needs activation, 
+                    your activation email will have been resent, check your email in a few minutes.'
+                );
+                $this->_helper->redirector->gotoRoute(array('action' => 'index'), 'account');
+                
+            }
+        }
 
         $this->view->form = $form;
     }
@@ -127,21 +199,17 @@ class Account_AuthController extends Zend_Controller_Action
         		if($request->isPost()){
 
         			$post = $request->getPost();
-        			if($form->isValid($post)){
+        			if($form->isValidWithDoctrineRecord($post, $user)){
 
-        				$user->password = $form->getValue('password');
-        				$user->reset_code = null;
-        				$user->reset_request_date = null;
-        				$user->unlock();
+        				$user->resetPassword();
 
-        				$this->view->formResponse = 
-        					'Your password has been successfully reset, <a href="' . 
-        					$this->_helper->url->simple('index') . '">click here to login</a>';
-        				return;
+        				$this->_helper->flashMessenger->addMessage(
+        					'Your password has been successfully reset.'
+        				);
+        				$this->_helper->redirector->gotoRoute(array('action' => 'index'), 'account');
         			}
         		}
 
-        		$this->view->formResponse = 'Enter your email address and new password here';
         		$this->view->form = $form;
         		return;
 
@@ -154,45 +222,69 @@ class Account_AuthController extends Zend_Controller_Action
         	}
 
         }
-
-        $this->view->formResponse = 'This reset link is invalid, <a href="' .
-        $this->_helper->url->simple('forgotten') . '">click here to request another</a>';
     }
     
     public function registerAction()
     {
-    	$form = Account_Form_Register();
     	$request = $this->getRequest();
+    	$abbr = $request->getParam('group');
+
+    	$groupSelect = (empty($abbr) || !$group = Model_GroupTable::getInstance()->findOneByAbbr($abbr));
+    	$form = new Account_Form_Register(array('groupSelect' => $groupSelect));
     	
-    	$group = Model_GroupTable::getInstance()->findOneByAbbr($request->getParam('group'));
-    	if(!$group){
-    		throw new App_Exception('No such group');
-    	}
+    	$user = new Model_User();
     	
-    	if($request->isPost() && $form->isValid($request->getPost())){
+    	if($request->isPost() && $form->isValidWithDoctrineRecord($request->getPost(), $user)){
+
+    	    if(!$group){
+    	        $group = Model_GroupTable::getInstance()->findOneByAbbr($form->abbr->getValue());
+    	    }
+    	    
+    		$user->register($group);
     		
-    		$user = new Model_User();
-    		$user->fromArray($form->getValues());
-    		$user->Groups[] = $group;
-    		$user->register();
+    		$this->_helper->flashMessenger->addMessage(
+                'Your registration was successful. Please check your email in a few minutes for your activation link.'
+            );
+    		
+    		$this->_helper->redirector->gotoRoute(array(
+                'controller' => 'index',
+                'action' => 'index'
+            ), 'account');
     	}
+    	
+    	$this->view->form = $form;
+    	$this->view->group = $group;
     }
     
     public function activateAction(){
     	
         $request = $this->getRequest();
     	$code = $request->getParam('code');
+    	$abbr = $request->getParam('group');
     	$user = Model_UserTable::getInstance()->findOneByActivationCode($code);
-    	$form = new Account_Form_Activate($user);
     	
-    	if($request->isPost() && $form->isValid($request->getPost())){
-    	    
-    	    $user->activate();
-    	    
-    	    $this->_helper->redirector->gotoRoute(array(
-                'controller' => 'index',
-                'action' => 'index'
-            ), 'account');
+    	if($user){
+        	$form = new Account_Form_Activate($user);
+        	
+        	if(!empty($abbr) && $group = Model_GroupTable::getInstance()->findOneByAbbr($abbr)){
+        	    $this->view->group = $group;
+        	}
+        	
+        	if($request->isPost() && $form->isValid($request->getPost())){
+        	    
+        	    $user->activate();
+        	    
+        	    $this->_helper->flashMessenger->addMessage(
+                    'Your account has been successfully activated. You may now login.'
+                );
+        	    
+        	    $this->_helper->redirector->gotoRoute(array(
+                    'controller' => 'index',
+                    'action' => 'index'
+                ), 'account');
+        	}
+        	
+        	$this->view->form = $form;
     	}
     }
 

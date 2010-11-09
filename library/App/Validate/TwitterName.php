@@ -21,5 +21,3 @@ class App_Validate_TwitterName extends Zend_Validate_Abstract
         return true;
     }
 }
-
-

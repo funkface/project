@@ -1,0 +1,44 @@
+<dl>
+<?php if($this->toUser): ?>
+<dt>From</dt>
+<dd><?php echo $this->escape($this->message->From->fullName); ?></dd>
+<?php else: ?>
+<dt>To</dt>
+<?php foreach($this->message->To as $recipient): ?>
+<dd><?php echo $this->escape($recipient->fullName); ?></dd>
+<?php endforeach; endif; ?>
+<dt>Sent</dt>
+<dd><?php echo $this->friendlyDateWithTime($this->message->sent_date); ?></dd>
+<dt>Subject</dt>
+<?php switch($this->message->type): case 'request': ?>
+<dd><?php echo strtoupper($this->message->subject); ?> membership request</dd>
+<dt>Membership request</dt>
+<dd>
+    <dl>
+        <dt>Full name</dt>
+        <dd><?php echo $this->escape($this->message->From->fullName); ?></dd>
+        <dt>Membership number</dt>
+        <dd><?php echo $this->escape($this->message->From->member_no); ?></dd>
+        <dt>Email address</dt>
+        <dd><?php echo $this->escape($this->message->From->email); ?></dd>
+    </dl>
+</dd>
+<dt>Membership actions</dt>
+<?php if($this->message->status == 'deleted'): ?>
+<dd>Request already processed</dd>
+<?php else: ?>
+<dd><a href="<?php echo $this->url(array(
+    'action' => 'view',
+    'id' => $this->message->id,
+    'request' => 'approve'
+), 'messages'); ?>">Approve request</a></dd>
+<?php endif; break; default: ?>
+<dd><?php echo $this->escape($this->message->subject); ?></dd>
+<dt>Message</dt>
+<dd><?php echo $this->message->body; ?></dd>
+<?php if($this->message->Images->count() > 0): ?>
+<dt>Images</dt>
+<?php foreach($this->message->Images as $image): ?>
+<dd><?php echo $this->displayUploadedImage($image->image, 'small'); ?></dd>
+<?php endforeach; endif; endswitch; ?>
+</dl>

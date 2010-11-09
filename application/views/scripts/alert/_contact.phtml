@@ -1,0 +1,17 @@
+<?php $this->placeholder('subject')->set('Contact Form Submission'); ?>
+<p>Dear <?php echo $this->to->name; ?>,</p>
+        
+<p>A contact form submission was made on the website with the following details:</p>
+
+<dl>
+<dt>Name</dt>
+<dd><?php echo $this->form->getValue('name'); ?></dd>
+<dt>Email address</dt>
+<dd><?php echo $this->form->getValue('email'); ?></dd>
+<dt>Telephone number</dt>
+<dd><?php echo $this->form->getValue('telephone'); ?></dd>
+<dt>Address</dt>
+<dd><?php echo nl2br($this->form->getValue('address')); ?></dd>
+<dt>Comment or question</dt>
+<dd><?php echo nl2br($this->form->getValue('query')); ?></dd>
+</dl>

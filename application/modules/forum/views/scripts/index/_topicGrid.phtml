@@ -1,0 +1,28 @@
+<table id="posts">
+    <thead>
+        <tr>
+            <?php foreach($this->columns as $column => $sort): ?>
+            <th class="<?php echo $sort['class']; ?>"><a href="<?php echo $sort['url'] 
+            ?>" title="<?php echo $this->escape($sort['title']); ?>"><?php echo $column; ?></a></th>
+            <?php endforeach; ?>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($this->rows as $post):
+            echo $this->partial('index/_viewPost.phtml', array(
+                'post' => $post, 
+                'group' => $this->group, 
+                'editable' => true
+            ));
+            
+            // Eew, eew, eeeeeewwww!! This table layout has gotta go!
+        ?><tr class="space"><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<div id="pager">Page: <ol><?php 
+$this->pagerControls->setTemplate('<li><a href="{%url}">{%page}</a></li>');
+$this->pagerControls->display();
+?></ol></div>

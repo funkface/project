@@ -1,36 +1,130 @@
 <?xml version="1.0"?>
-<projectProfile>
+<projectProfile type="default" version="1.10">
   <projectDirectory>
-    <projectProfileFile/>
-    <applicationDirectory>
+    <projectProfileFile filesystemName=".zfproject.xml"/>
+    <applicationDirectory classNamePrefix="Application_">
       <apisDirectory enabled="false"/>
       <configsDirectory>
         <applicationConfigFile type="ini"/>
       </configsDirectory>
       <controllersDirectory>
-        <controllerFile controllerName="index">
+        <controllerFile controllerName="Index">
           <actionMethod actionName="index"/>
         </controllerFile>
-        <controllerFile controllerName="error"/>
+        <controllerFile controllerName="Error"/>
+        <controllerFile controllerName="Navigation">
+          <actionMethod actionName="index"/>
+        </controllerFile>
+        <controllerFile controllerName="Session">
+          <actionMethod actionName="index"/>
+        </controllerFile>
+        <controllerFile controllerName="Contact">
+          <actionMethod actionName="index"/>
+        </controllerFile>
+        <controllerFile controllerName="Legal">
+          <actionMethod actionName="index"/>
+        </controllerFile>
+        <controllerFile controllerName="Forum">
+          <actionMethod actionName="index"/>
+        </controllerFile>
+        <controllerFile controllerName="Group">
+          <actionMethod actionName="index"/>
+        </controllerFile>
+        <controllerFile controllerName="Event">
+          <actionMethod actionName="index"/>
+        </controllerFile>
       </controllersDirectory>
+      <formsDirectory enabled="false"/>
       <layoutsDirectory enabled="false"/>
       <modelsDirectory/>
-      <modulesDirectory>
-        
+      <modulesDirectory enabled="false">
+        <moduleDirectory moduleName="forum">
+          <apisDirectory enabled="false"/>
+          <configsDirectory enabled="false"/>
+          <controllersDirectory/>
+          <formsDirectory enabled="false"/>
+          <layoutsDirectory enabled="false"/>
+          <modelsDirectory/>
+          <viewsDirectory>
+            <viewScriptsDirectory/>
+            <viewHelpersDirectory/>
+            <viewFiltersDirectory/>
+          </viewsDirectory>
+        </moduleDirectory>
+        <moduleDirectory moduleName="admin">
+          <apisDirectory enabled="false"/>
+          <configsDirectory enabled="false"/>
+          <controllersDirectory>
+            <controllerFile controllerName="Event">
+              <actionMethod actionName="index"/>
+            </controllerFile>
+            <controllerFile controllerName="Index">
+              <actionMethod actionName="index"/>
+            </controllerFile>
+            <controllerFile controllerName="CaseStudy">
+              <actionMethod actionName="index"/>
+            </controllerFile>
+            <controllerFile controllerName="Gallery">
+              <actionMethod actionName="index"/>
+            </controllerFile>
+          </controllersDirectory>
+          <formsDirectory enabled="false"/>
+          <layoutsDirectory enabled="false"/>
+          <modelsDirectory/>
+          <viewsDirectory>
+            <viewScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Event">
+                <viewScriptFile forActionName="index"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Index">
+                <viewScriptFile forActionName="index"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="CaseStudy">
+                <viewScriptFile forActionName="index"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Gallery">
+                <viewScriptFile forActionName="index"/>
+              </viewControllerScriptsDirectory>
+            </viewScriptsDirectory>
+            <viewHelpersDirectory/>
+            <viewFiltersDirectory/>
+          </viewsDirectory>
+        </moduleDirectory>
       </modulesDirectory>
       <viewsDirectory>
         <viewScriptsDirectory>
-          <viewControllerScriptsDirectory forControllerName="index">
+          <viewControllerScriptsDirectory forControllerName="Index">
             <viewScriptFile forActionName="index"/>
           </viewControllerScriptsDirectory>
-          <viewControllerScriptsDirectory forControllerName="error">
+          <viewControllerScriptsDirectory forControllerName="Error">
             <viewScriptFile forActionName="error"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Navigation">
+            <viewScriptFile forActionName="index"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Session">
+            <viewScriptFile forActionName="index"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Contact">
+            <viewScriptFile forActionName="index"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Legal">
+            <viewScriptFile forActionName="index"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Forum">
+            <viewScriptFile forActionName="index"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Group">
+            <viewScriptFile forActionName="index"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Event">
+            <viewScriptFile forActionName="index"/>
           </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>
         <viewFiltersDirectory enabled="false"/>
       </viewsDirectory>
-      <bootstrapFile/>
+      <bootstrapFile filesystemName="Bootstrap.php"/>
     </applicationDirectory>
     <dataDirectory enabled="false">
       <cacheDirectory enabled="false"/>
@@ -40,6 +134,9 @@
       <sessionsDirectory enabled="false"/>
       <uploadsDirectory enabled="false"/>
     </dataDirectory>
+    <docsDirectory>
+      <file filesystemName="README.txt"/>
+    </docsDirectory>
     <libraryDirectory>
       <zfStandardLibraryDirectory enabled="false"/>
     </libraryDirectory>
@@ -47,18 +144,31 @@
       <publicStylesheetsDirectory enabled="false"/>
       <publicScriptsDirectory enabled="false"/>
       <publicImagesDirectory enabled="false"/>
-      <publicIndexFile/>
-      <htaccessFile/>
+      <publicIndexFile filesystemName="index.php"/>
+      <htaccessFile filesystemName=".htaccess"/>
     </publicDirectory>
     <projectProvidersDirectory enabled="false"/>
     <temporaryDirectory enabled="false"/>
     <testsDirectory>
-      <testPHPUnitConfigFile/>
+      <testPHPUnitConfigFile filesystemName="phpunit.xml"/>
       <testApplicationDirectory>
-        <testApplicationBootstrapFile/>
+        <testApplicationBootstrapFile filesystemName="bootstrap.php"/>
+        <testApplicationControllerDirectory>
+          <testApplicationControllerFile filesystemName="NavigationControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="SessionControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="ContactControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="LegalControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="ForumControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="GroupControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="EventControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="EventControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="IndexControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="CaseStudyControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="GalleryControllerTest.php"/>
+        </testApplicationControllerDirectory>
       </testApplicationDirectory>
       <testLibraryDirectory>
-        <testLibraryBootstrapFile/>
+        <testLibraryBootstrapFile filesystemName="bootstrap.php"/>
       </testLibraryDirectory>
     </testsDirectory>
   </projectDirectory>

@@ -1,0 +1,11 @@
+.SimpleFile {
+	border: 1px dotted #cc0000;
+	background-image: url('images/insertfile.gif');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: #ffffcc;
+	width: 99%;
+	height: 100px;
+	margin: 10px 0;
+	display: block;
+}

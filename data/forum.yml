@@ -1,0 +1,176 @@
+detect_relations: true
+
+Group:
+    columns:
+        has_gallery:
+            type: boolean
+            notnull: true
+            default: 0
+        title: 
+            type: string(63)
+            notblank: true
+        description: string(127)
+        abbr: string(8)
+        teaser: string(127)
+        intro: string(102400)          
+        
+User:
+    columns:
+        email: 
+            type: string(127)
+            email: true
+        password: string(40)
+        registration_date: timestamp
+        activation_code: string(40)
+        activation_email: string(127)
+        first_activation_date: timestamp
+        last_activation_date: timestamp
+        last_login_date: timestamp
+        last_login_attempt_date: timestamp
+        num_login_attempts: integer
+        reset_request_date: timestamp
+        reset_code: string(40)
+        first_name: 
+            type: string(63)
+            regexp: '/^[^,;\n\r]+$/'
+        last_name: 
+            type: string(63)
+            regexp: '/^[^,;\s]+$/'
+        member_no: string(63)
+        avatar: string(32)
+        signature: string(255)
+    relations:
+        Groups:
+            class: Group
+            local: user_id
+            foreign: group_id
+            refClass: UserGroup
+        ReceivedMessages:
+            class: Message
+            local: user_id
+            foreign: message_id
+            refClass: UserMessage
+            foreignAlias: To
+        SentMessages:
+            class: Message
+            local: id
+            type: many
+            foreign: from_user_id
+            foreignType: one
+            foreignAlias: From
+        
+UserGroup:
+    columns:
+        user_id:
+            type: integer
+            notnull: true
+            primary: true
+        group_id:
+            type: integer
+            notnull: true
+            primary: true
+        role:
+            type: enum
+            values: [request, member, leader]
+            default: request
+            notnull: true
+        
+Message:
+    columns:
+        from_user_id: 
+            type: integer
+            notnull: true
+        created_date: timestamp
+        sent_date: timestamp
+        type:
+            type: enum
+            values: [message, request, report]
+            default: message
+            notnull: true
+        subject:
+            type: string(63)
+            notblank: true
+        body: string(102400)
+    relations:
+        Images:
+            class: MessageImage
+            local: id
+            foreign: message_id
+            type: many
+            foreignType: one
+        
+UserMessage:
+    columns:
+        user_id:
+            type: integer
+            notnull: true
+            primary: true
+        message_id: 
+            type: integer
+            notnull: true
+            primary: true
+        status:
+            type: enum
+            values: [new, read, deleted]
+            default: new
+            notnull: true
+            
+MessageImage:
+    columns:
+        message_id: 
+            type: integer
+            notnull: true
+        image: string(32)
+        
+Topic:
+    columns:
+        group_id:
+            type: integer
+            notnull: true
+        user_id:
+            type: integer
+            notnull: true
+        created_date: timestamp
+        status:
+            type: enum
+            values: [open, locked, deleted]
+            default: open
+            notnull: true
+        sticky: 
+            type: boolean
+            default: false
+            notnull: true
+        title: 
+            type: string(63)
+            notblank: true
+        
+Post:
+    columns:
+        topic_id:
+            type: integer
+        user_id:
+            type: integer
+            notnull: true
+        created_date: timestamp
+        posted_date: timstamp
+        last_edit_date: timestamp
+        status:
+            type: enum
+            values: [open, locked, deleted]
+            default: open
+            notnull: true
+        body: string(102400)
+    relations:
+        Images:
+            class: PostImage
+            local: id
+            foreign: post_id
+            type: many
+            foreignType: one
+
+PostImage:
+    columns:
+        post_id: 
+            type: integer
+            notnull: true
+        image: string(32)

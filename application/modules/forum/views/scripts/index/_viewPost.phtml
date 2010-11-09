@@ -1,0 +1,56 @@
+<tr>
+    <td class="identity"><ul>
+        <li><img src="<?php echo $this->displayUploadedImage($this->post->User->avatar, 'thumb');
+         ?>" alt="<?php echo $this->escape($this->post->User->fullName); ?>"/></li>
+        <li><?php echo $this->escape($this->post->User->fullName); ?></li>
+        <li><?php echo $this->groupAbbr($this->group) . ' ' . $this->escape($this->post->User->role); ?></li>
+        <?php if($this->editable && !$this->post->user_owns): ?>
+        <li><a href="<?php echo $this->url(array('user' => $this->post->User->id), 'messageUser');
+        ?>" title="Send a private message to <?php echo $this->escape($this->post->User->fullName); 
+        ?>">pm</a></li>
+        <?php endif; ?>
+    </ul></td>
+    <td class="post"><ul>
+        <li><ul>
+            <li><?php echo $this->terseDateWithDayAndTime($this->post->posted_date); ?></li>
+            <?php if($this->post->last_edit_date): ?><li>(Edited: <?php 
+                echo $this->terseDateWithDayAndTime($this->post->last_edit_date); 
+            ?>)</li><?php endif; ?>
+            <?php if($this->editable && $this->post->userCanEdit): ?>
+            <li><a href="<?php echo $this->url(array(
+                'action' => 'edit', 
+                'abbr' => $this->group->abbr,
+                'topic' => $this->post->Topic->id,
+                'post' => $this->post->id
+            ), 'topicReply');
+            ?>">edit</a></li>
+            <li><a onclick="return confirm('Are you sure you want to delete this post?');" href="<?php 
+            echo $this->url(array(
+                'action' => 'delete', 
+                'abbr' => $this->group->abbr,
+                'topic' => $this->post->Topic->id,
+                'post' => $this->post->id
+            ), 'topicReply');
+            ?>">delete</a></li>
+            <?php endif; ?>
+        </ul></li>
+        <li class="post"><?php echo $this->post->body; ?></li>
+        <?php if($this->post->Images->count() > 0): 
+        
+        $this->headScript()->appendFile($this->baseUrl('js/jquery.colorbox-min.js'))
+            ->appendFile($this->baseUrl('js/colorbox-setup.js'));
+            
+        $this->headLink()->appendStylesheet($this->baseUrl('css/colorbox.css'), 'screen,projection');
+        
+        ?><li class="images"><ul>
+        <?php foreach($this->post->Images as $i => $image): ?>
+            <li><a class="colorbox" title="Image <?php echo $i + 1; ?>" rel="post<?php
+            echo $this->post->id; ?>" href="<?php 
+            echo $this->displayUploadedImage($image->image); 
+            ?>"><img src="<?php echo $this->displayUploadedImage($image->image, 'small');
+            ?>" alt="Image <?php echo $i + 1; ?>"/></a></li>        
+        <?php endforeach;?>
+        </ul></li><?php endif; ?>
+        <li class="signature"><?php echo $this->post->User->signature; ?></li>
+    </ul></td>
+</tr>

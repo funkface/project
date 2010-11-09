@@ -1,0 +1,13 @@
+<?php echo $this->partial('index/_left.phtml', array('group' => $this->group)); ?>
+<div id="right" class="topic">
+<?php echo $this->messages(); ?>
+<h2><?php echo $this->pageTitle('Replying to topic "' . $this->topic->title . '"'); ?></h2>
+<?php if($this->preview):?>
+<div id="post_preview">
+<table id="posts"><tbody>
+<?php echo $this->partial('index/_viewPost.phtml', array('post' => $this->post, 'group' => $this->group)); ?>
+</tbody></table>
+</div>
+<?php endif; ?>
+<?php echo $this->form; ?>
+</div>

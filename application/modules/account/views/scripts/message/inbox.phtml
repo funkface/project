@@ -1,0 +1,9 @@
+<div id="left" class="group forum">
+<h2><?php echo $this->pageTitle('My Account')->pageTitle('My Messages')->pageTitle('Inbox'); ?></h2>
+<p>Welcome to your inbox. This page will display all the messages sent to you by other users.</p>
+<?php echo $this->action('navigation', 'message', 'account'); ?>
+</div>
+<div id="right">
+<?php echo $this->messages();
+echo $this->grid; ?>
+</div>

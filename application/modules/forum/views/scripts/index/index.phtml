@@ -1,0 +1,6 @@
+<?php $this->pageTitle($this->group->title)->pageTitle('Forum'); ?>
+<?php echo $this->partial('index/_left.phtml', array('group' => $this->group)); ?>
+<div id="right">
+<?php echo $this->messages(); ?>
+<?php echo $this->grid; ?>
+</div>

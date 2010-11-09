@@ -1,0 +1,6 @@
+<div id="left" class="group forum">
+<h2><?php echo $this->pageTitle('My Account')->pageTitle('My Messages')->pageTitle('Deleted Messages'); ?></h2>
+<p>Welcome to your deleted messages box. This page will display all messages deleted from your inbox.</p>
+<?php echo $this->action('navigation', 'message', 'account'); ?>
+</div>
+<div id="right"><?php echo $this->grid; ?></div>

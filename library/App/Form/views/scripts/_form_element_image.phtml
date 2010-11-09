@@ -2,17 +2,29 @@
     <?php echo $this->formLabel($this->element->getName(), $this->element->getLabel()); ?>
 </dt>
 <dd id="<?php echo $this->element->getName(); ?>-element">
-    <?php
-        if($image = $this->element->getThumbnail()):
-            echo '<img src="' . $image .'" alt="preview image" style="float: left" />';
-        else:
-            echo '<img src="/cms/img/no_image.gif" alt="preview image" style="float: left" />';
-        endif;
-    ?>
 
-    <input style="margin-left: 10px;" type="file" name="<?php echo $this->element->getName(); ?>" value="<?php echo $this->element->getValue()?>" <?php echo $this->element->getAttribs() ?> />
+    <ul><li>
+    <img src="<?php echo ($image = $this->element->getThumbnail()) ? $image :
+        $this->baseUrl('/img/thumb_no_image.gif'); ?>" alt="preview image" />
+        
+    <?php if($image): ?><input type="checkbox" name="delete-<?php echo $this->element->getName(); 
+    ?>" id="delete-<?php echo $this->element->getName(); 
+    ?>" value="1" /><label for="delete-<?php echo $this->element->getName(); 
+    ?>">Delete image</label><?php endif; ?>
+    </li></ul>
+
+    <input style="margin-left: 10px;" type="file" name="<?php echo $this->element->getName(); 
+    ?>" id="<?php echo $this->element->getName(); 
+    ?>" <?php //echo $this->element->getAttribs() ?> />
+    <input type="submit" value="Upload" id="<?php echo $this->element->getName();
+    ?>-upload" name="<?php echo $this->element->getName();
+    ?>-upload" />
+    
+    <input type="hidden" name="existing-<?php echo $this->element->getName();
+    ?>" id="existing-<?php echo $this->element->getName(); 
+    ?>" value="<?php echo $this->element->getImage(); ?>" />
 
     <?php if($messages = $this->element->getMessages()) echo $this->formErrors($messages); ?>
-
-    <div class="help"><?php echo $this->element->getDescription() ?></div>
+    
+    <p class="description"><?php echo $this->element->getDescription() ?></p>
 </dd>

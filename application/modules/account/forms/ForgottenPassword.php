@@ -1,5 +1,5 @@
 <?php
-class Account_Form_ForgottenPassword extends Zend_Form {
+class Account_Form_ForgottenPassword extends App_Form {
     
     public function init(){
 
@@ -8,7 +8,8 @@ class Account_Form_ForgottenPassword extends Zend_Form {
 	        ->setAttrib('class', 'text')
 	        ->setRequired(true)
 	        ->addFilter('StringTrim')
-	        ->addValidator('EmailAddress');
+	        ->addValidator('EmailAddress')
+	        ->setDescription('The email address registered against your account.');
 
         $submit = new Zend_Form_Element_Submit('request');
         $submit->setLabel('Request reset link')

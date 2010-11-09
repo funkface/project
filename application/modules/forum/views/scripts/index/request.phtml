@@ -1,0 +1,28 @@
+<div id="left" class="account">
+<h2><?php echo $this->pageTitle($this->group->title)->pageTitle('Request membership'); ?></h2>
+<p>In order to join the <?php echo $this->groupAbbr($this->group); ?> group 
+and be allowed to view the <?php echo $this->groupAbbr($this->group); ?> forum
+you must request membership from the <?php echo $this->groupAbbr($this->group); ?> group leader.</p>
+<h3>Membership request procedure</h3>
+<ol>
+<li>Clicking the Request <?php echo $this->groupAbbr($this->group); ?> Membership
+button opposite sends a message to the <?php echo $this->groupAbbr($this->group); ?> group leader 
+informing them that you wish to join the <?php echo $this->groupAbbr($this->group); ?> group.</li>
+<li>If you are accepted, you'll then be able to use the <?php echo $this->groupAbbr($this->group); ?> forum 
+and message <?php echo $this->groupAbbr($this->group); ?> members.</li>
+</ol>
+</div>
+<div id="right" class="account">
+<?php if($this->pending): ?>
+<h2>Membership request received</h2>
+<p>Your request is waiting to be approved by the <?php echo $this->groupAbbr($this->group); ?> group leader.</p>
+<p>We will notify you when your request has been processed.</p>
+<?php else: ?>
+<h2>You are not registered as a <?php echo $this->groupAbbr($this->group); ?> member</h2>
+<p>This forum is only open to <?php echo $this->groupAbbr($this->group); ?> members</p>
+<p>If you'd like to join the <?php echo $this->groupAbbr($this->group); ?>, please click the button below.</p>
+<p><a class="submit" href="<?php 
+echo $this->url(array('action' => 'request', 'abbr' => $this->group->abbr, 'id' => 'join'), 'forumDetail'); 
+?>">Request <?php echo $this->groupAbbr($this->group); ?> membership</a></p>
+<?php endif; ?>
+</div>

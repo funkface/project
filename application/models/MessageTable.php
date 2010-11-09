@@ -16,4 +16,128 @@ class Model_MessageTable extends Doctrine_Table
     {
         return Doctrine_Core::getTable('Model_Message');
     }
+    
+    public function getMessageBoxQuery
+    (
+        Model_User $user = null, 
+        $from = false, 
+        $statuses = null, 
+        $types = null,
+        $drafts = null
+    )
+    {        
+        $query = $this->createQuery('m')
+            ->select('m.*, t.*, f.*, um.*')
+            ->leftJoin('m.UserMessage um')
+            ->leftJoin('um.User t')
+            ->leftJoin('m.From f');
+            
+        if($statuses){
+            $query->andWhereIn('um.status', (array)$statuses);
+        }
+
+        if($types){
+            $query->andWhereIn('m.type', $types);
+        }
+        
+        if($drafts === true){
+            $query->andWhere('m.sent_date IS NULL');
+        }else{// if($drafts === false){
+            $query->andWhere('m.sent_date IS NOT NULL');
+        }
+        
+        if($user){
+            if($from){
+                $query->andWhere('f.id = ?', $user->id);
+            }else{
+                $query->andWhere('t.id = ?', $user->id);
+            }
+        }
+
+        return $query;
+    }
+    
+    public function findDraft($id, Model_user $user)
+    {
+        return $this->createQuery('m')
+            ->where('m.id = ?', (int)$id)
+            ->AndWhere('m.from_user_id = ?', $user->id)
+            ->AndWhere('m.sent_date IS NULL')
+            ->fetchOne();
+    }
+    
+    public function findByIdAndUser($id, Model_User $user)
+    {
+        
+        $config = Zend_Registry::get('config');
+        $adapter = Zend_Db::factory($config->doctrine->dsn->adapter, $config->doctrine->dsn);
+        
+        $messageSelect = $adapter->select()
+            ->from(array('m' => 'message'))
+            ->join(array('um' => 'user_message'), 'm.id = um.message_id', 'status')
+            ->where('m.id = ?', (int)$id)
+            ->where("(um.user_id = ? OR (m.from_user_id = ? AND m.type = 'message'))", $user->id, $user->id)
+            ->limit(1);
+            
+        $select = $adapter->select()
+            ->from(array('m' => $messageSelect), array())
+            ->join(array('f' => 'user'), 'm.from_user_id = f.id', array());
+            
+        $from = $select->assemble();
+        $from = substr($from, 5);
+            
+        $query = new Doctrine_RawSql();
+        $query->addComponent('m', 'Model_Message m')
+            ->addComponent('f', 'm.From f')
+            ->select('{m.*}, {m.status}, {f.*}')
+            ->from($from);
+            
+        $collection = $query->execute();
+        
+        if($collection instanceof Doctrine_Collection){
+            return $collection->getFirst();
+        }
+        
+        return false;
+        
+        /*
+        return $this->createQuery('m')
+            ->where('m.id = ?', (int)$id)
+            ->andWhere(
+                "m.UserMessage.user_id = ? OR (m.from_user_id = ? and m.type = 'message')", 
+                array($user->id, $user->id)
+            )
+            ->fetchOne();
+        */
+    }
+    
+    public function findNewCountByUser(Model_User $user)
+    {
+        return $this->createQuery('m')
+            ->select('COUNT(m.id) as count')
+            ->leftJoin('m.UserMessage um')
+            ->where('um.user_id = ?', $user->id)
+            ->andWhere('um.status = ?', 'new')
+            ->andWhere('m.sent_date IS NOT NULL')
+            ->fetchOne();
+    }
+    
+    public function setStatusByIdAndRecipient($status, $id, Model_User $user)
+    {
+        return Doctrine_Query::create()
+            ->update('Model_UserMessage um')
+            ->set('status', '?', (string)$status)
+            ->where('message_id = ?', $id)
+            ->andWhere('user_id = ?', $user->id)
+            ->execute();
+    }
+    
+    public function setStatusById($status, $id)
+    {
+        return Doctrine_Query::create()
+            ->update('Model_UserMessage um')
+            ->set('status', '?', (string)$status)
+            ->where('message_id = ?', $id)
+            ->execute();
+    }
 }

@@ -7,7 +7,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     protected function _initAutoload()
     {
-       /* Necessary to allow Model_Foo to map to models/fo.php,
+       /* Necessary to allow Model_Foo to map to models/foo.php,
         * or Admin_Form_Foo to modules/admin/forms/foo.php
         * (also requires "resources.modules.admin = admin" in config)
         * for eg Admin_Model_Foo admin module must also have a bootstrap
@@ -24,6 +24,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config = new Zend_Config($this->getOptions());
         Zend_Registry::set('config', $config);
         return $config;
+    }
+    
+    protected function _initSession()
+    {
+        Zend_Session::start();
     }
 
     protected function _initRequest()
@@ -54,10 +59,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $view->doctype('XHTML1_STRICT');
         $view->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
         $view->headLink()
-                ->appendStylesheet($view->baseUrl('css/style.css'), 'screen,projection')
-                ->appendStylesheet($view->baseUrl('css/ie.css'), 'screen,projection', 'lte IE 7');
+            ->appendStylesheet($view->baseUrl('css/style.css'), 'screen,projection')
+            ->appendStylesheet($view->baseUrl('css/ie.css'), 'screen,projection', 'lte IE 7');
                 
-        $view->headScript()->appendFile($view->baseUrl('/js/jquery-1.3.2.min.js'));
+        $view->headScript()->appendFile('http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js');
+        
+        $title = $this->getOption('title');
+        $view->headTitle($title['appName'])->setSeparator($title['separator']);
 
         return $view;
     }
@@ -101,7 +109,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         $dsn = 'mysql://' . urlencode($dbParams['username']) . ':' . urlencode($dbParams['password']) .
             '@' . urlencode($dbParams['host']) . '/' . urlencode($dbParams['dbname']);
-        
+
         $conn = Doctrine_Manager::connection($dsn, 'doctrine');
         $conn->setAttribute(Doctrine_Core::ATTR_USE_NATIVE_ENUM, true);
 
@@ -124,5 +132,5 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         return false;
     }
-    
+
 }

@@ -12,5 +12,40 @@
  */
 class Model_Message extends Model_Base_Message
 {
-
+    public function preInsert($event)
+    {
+        $this->created_date = date('c');
+    }
+    
+    public function send()
+    {
+        $this->sent_date = date('c');
+        $this->save();
+    }
+    
+    public function delete()
+    {
+        // LAME!!! Doctrine doesn't understand the DB constraints that it, itself, created.
+        foreach($this->UserMessage as $userMessage){
+            $userMessage->delete();
+        }
+        
+        parent::delete();
+    }
+    
+    public function setDeletedForUser(Model_User $user)
+    {
+        return $this->getTable()->setStatusByIdAndRecipient('deleted', $this->id, $user);
+    }
+    
+    public function setReadForUser(Model_User $user)
+    {
+        return $this->getTable()->setStatusByIdAndRecipient('read', $this->id, $user);
+    }
+    
+    public function setDeletedForAll()
+    {
+        return $this->getTable()->setStatusById('deleted', $this->id);
+    }
+    
 }

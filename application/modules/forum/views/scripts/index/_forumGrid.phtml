@@ -1,0 +1,64 @@
+<?php if($this->rows->count() < 1): ?>
+<p>No topics found</p>
+<?php else: ?>
+<table>
+    <thead>
+        <tr>
+            <th class="<?php echo $this->columns['important']['class']; 
+            ?>"><a href="<?php echo $this->columns['important']['url'] 
+            ?>" title="Sort by importance in <?php 
+                echo $this->columns['important']['class'] == 'asc' ? 'ascending' : 'descending';
+            ?> order">!</a></th>
+            <th class="<?php echo $this->columns['topic']['class']; 
+            ?>"><a href="<?php echo $this->columns['topic']['url'] 
+            ?>" title="Sort by topic date in <?php 
+                echo $this->columns['topic']['class'] == 'asc' ? 'ascending' : 'descending';
+            ?> order">topic</a></th>
+            <th class="right <?php echo $this->columns['posts']['class'];
+            ?>"><a href="<?php echo $this->columns['posts']['url'] 
+            ?>" title="Sort by number of posts in <?php 
+                echo $this->columns['posts']['class'] == 'asc' ? 'ascending' : 'descending';
+            ?> order">posts</a></th>
+            <th class="right <?php echo $this->columns['last']['class'];
+            ?>"><a href="<?php echo $this->columns['last']['url'] 
+            ?>" title="Sort by date of last post in <?php 
+                echo $this->columns['last']['class'] == 'asc' ? 'ascending' : 'descending';
+            ?> order">last post</a></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($this->rows as $topic): ?>
+        <tr>
+            <td><?php echo $topic->sticky ? '!' : '&nbsp;'; ?></td>
+            <td>
+                <a class="topic_title" href="<?php echo $this->url(array(
+                    'action' => 'topic',
+                    'abbr' => $this->group->abbr,
+                    'id' => $topic->id
+                ), 'forumDetail', true); ?>"><?php echo $this->escape($topic->title); ?></a>
+                <dl>
+                    <dt>by</dt>
+                    <dd><?php echo $this->escape($topic->first_full_name); ?></dd>
+                    <dt>on</dt>
+                    <dd><?php echo $this->terseDateWithDayAndTime($topic->created_date); ?></dd>
+                </dl>
+            </td>
+            <td class="right"><?php echo $topic->num_posts; ?></td>
+            <td class="right">
+                <dl>
+                    <dt>by</dt>
+                    <dd><?php echo $this->escape($topic->last_full_name); ?></dd>
+                    <dt>on</dt>
+                    <dd><?php echo $this->terseDateWithDayAndTime($topic->last_date); ?></dd>
+                </dl>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<div id="pager">Page: <ol><?php 
+$this->pagerControls->setTemplate('<li><a href="{%url}">{%page}</a></li>');
+$this->pagerControls->display();
+?></ol></div>
+<?php endif; ?>

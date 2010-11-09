@@ -18,11 +18,6 @@ class Model_User extends Model_Base_User
         $this->_lockOut = Zend_Registry::get('config')->auth->lockOut;
     }
     
-    public function isActive(){
-        
-        return ($this->activation_date !== null);
-    }
-    
     public function isLocked(){
                     
         // unlock account if enough time has elapsed 
@@ -41,23 +36,22 @@ class Model_User extends Model_Base_User
 
         $this->num_login_attempts = $this->num_login_attempts + 1;
         $this->last_login_attempt_date = date('c');
-        $this->save();
-        
+
         //Zend_Registry::get('log')->log('login attempt (' . $this->num_login_attempts . ')', null, null, $this->id);
         
         if($this->num_login_attempts == $this->_lockOut->maxAttempts){
             
             //Zend_Registry::get('log')->log('account locked', null, null, $this->id);
             
-            $this->resetRequest();
+            $this->_reset();
             
             $email = new App_Mail_Alert();
             $email->setUser($this)
             	->setViewScript('alert/_account_locked.phtml')
-            	->addViewVars(array('unlockDate' => $this->getUnlockDate()))
             	->send();
-        }
-        
+        }else{
+            $this->save();    
+        }    
     }
     
     public function loginSuccess(){
@@ -81,9 +75,7 @@ class Model_User extends Model_Base_User
     
     public function resetRequest()
     {
-        $this->reset_code = sha1(uniqid());
-        $this->reset_request_date = date('c');
-        $this->save();
+        $this->_reset();
         
         // send email to user
         $email = new App_Mail_Alert();
@@ -92,16 +84,71 @@ class Model_User extends Model_Base_User
             ->send();
     }
     
-    public function register(Model_Group $group)
+    public function notifySystemUpdate()
     {
-        $this->registration_code = sha1(uniqid());
-        $this->registration_date = date('c');
-        $this->Groups[] = $group;
-        $this->save();
+        $this->_reset();
         
         // send email to user
         $email = new App_Mail_Alert();
         $email->setUser($this)
+            ->setViewScript('alert/_system_update.phtml')
+            ->send();
+    }
+    
+    public function resetPassword()
+    {
+        $this->reset_code = null;
+        $this->reset_request_date = null;
+        $this->unlock();
+    }
+    
+    public function register(Model_Group $group)
+    {
+        $this->registration_date = date('c');
+        $this->Groups[] = $group;
+        $this->updateDetails();
+    }
+    
+    public function requestMembership(Model_Group $group)
+    {
+        $this->Groups[] = $group;
+        $this->save();
+        $group->requestMembership($this);
+    }
+    
+    public function updateDetails()
+    {
+        // get old values of modified fields
+        $modified = $this->getModified(true);
+        
+        if(array_key_exists('email', $modified)){
+            
+            $this->activation_code = sha1(uniqid());
+            $this->activation_email = $this->email;
+            $dummyUser = clone $this;
+            $this->email = $modified['email'];
+            $this->save();
+            
+            // send email to user
+            $this->_sendActivationEmail($dummyUser);
+            
+        }else{
+            $this->save();
+        } 
+    }
+    
+    public function resendActivation()
+    {
+        $dummyUser = clone $this;
+        $dummyUser->email = $this->activation_email;
+        
+        $this->_sendActivationEmail($dummyUser);
+    }
+    
+    protected function _sendActivationEmail($user)
+    {
+        $email = new App_Mail_Alert();
+        $email->setUser($user)
             ->setViewScript('alert/_activate.phtml')
             ->send();
     }
@@ -109,19 +156,105 @@ class Model_User extends Model_Base_User
     public function activate()
     {
         $this->activation_code = null;
-        $this->activation_date = date('c');
-        $this->save();
-        
-        $this->Groups[0]->requestMembership($this);
+        $this->last_activation_date = date('c');
+        $this->email = $this->activation_email;
+        $this->activation_email = null;
+
+        if(empty($this->first_activation_date)){
+            $this->first_activation_date = $this->last_activation_date;
+            $this->save();
+            $this->Groups[0]->requestMembership($this);
+        }else{
+            $this->save();
+        } 
     }
     
-    public function getUnlockDate()
+    public function approveForGroup($group)
     {
-        return date('l jS F Y \a\t H:i', strtotime($this->last_login_attempt_date) + $this->_lockOut->unlockInterval);
+        if(is_string($group)){
+            $group = Model_GroupTable::getInstance()->findByAbbr($group);
+        }
+        
+        $this->getTable()->setRoleForUserAndGroup('member', $this, $group);
+        
+        // notify user
+        $email = new App_Mail_Alert();
+        $email->setUser($this)
+            ->addViewVars(array('group' => $group))
+            ->setViewScript('alert/_membership_approved.phtml')
+            ->send();
+    }
+    
+    public function getInboxQuery()
+    {
+        return Model_MessageTable::getInstance()->getMessageBoxQuery($this, false, array('new', 'read'));
+    }
+    
+    public function getSentQuery()
+    {
+        return Model_MessageTable::getInstance()->getMessageBoxQuery($this, true, null, array('message', 'report'));
+    }
+    
+    public function getDeletedQuery()
+    {
+        return Model_MessageTable::getInstance()->getMessageBoxQuery($this, false, 'deleted', array('message', 'report'));
+    }
+    
+    public function isMemberOfGroup(Model_Group $group)
+    {
+        $role = $this->getRoleForGroup($group);
+        return ($role == 'member' || $role == 'leader');
+    }
+    
+    public function isLeaderOfGroup(Model_Group $group)
+    {
+        $role = $this->getRoleForGroup($group);
+        return ($role == 'leader');
+    }
+    
+    public function isLeader()
+    {
+        $record = Model_UserGroupTable::getInstance()->findOneByUserIdAndRole($this->id, 'leader');
+        return (bool)$record;
+    }
+    
+    public function getRoleForGroup(Model_Group $group)
+    {
+        $record = Model_UserGroupTable::getInstance()->findOneByUserIdAndGroupId($this->id, $group->id);
+        if($record){
+            return $record->role;
+        }
+        
+        return null;
+    }
+    
+    /**
+     * @return int
+     */
+    public function getNewMessageCount()
+    {
+        return Model_MessageTable::getInstance()->findNewCountByUser($this)->count;
+    }
+    
+    // Protected
+    
+    protected function _reset()
+    {
+        $this->reset_code = sha1(uniqid());
+        $this->reset_request_date = date('c');
+        $this->save();
     }
     
     protected function _locked(){
         return ($this->num_login_attempts >= $this->_lockOut->maxAttempts);
+    }
+    
+    
+    // Accessors
+    
+    protected function getUnlockDate()
+    {
+        return strtotime($this->last_login_attempt_date) + $this->_lockOut->unlockInterval;
     }
     
     protected function setPassword($password)
@@ -130,4 +263,8 @@ class Model_User extends Model_Base_User
     	$this->_set('password', $filter->filter($password));
     }
     
+    protected function getFullName()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
 }

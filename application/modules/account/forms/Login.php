@@ -10,19 +10,18 @@ class Account_Form_Login extends App_Form
 
         $username = new Zend_Form_Element_Text('email');
         $username->setLabel('Email address')
-                 ->setAttrib('class', 'text')
-                 ->setRequired(true)
-                 ->addFilter('StringTrim')
-                 ;//->removeDecorator('Errors'); // don't show errors on login form
-
+            ->setDescription('The email address registered against your account.')
+            ->setAttrib('class', 'text')
+            ->setRequired(true)
+            ->addFilter('StringTrim');
 
         $password = new Zend_Form_Element_Password('password');
         $password->setLabel('Password')
-                 ->setAttrib('class', 'password')
-                 ->setRequired(true)
-                 ->addFilter('StringTrim')
-                 ->addValidator('AuthoriseWithLockout', true, array('Model_User', 'email'))
-                 ;//->removeDecorator('Errors');
+            ->setDescription('Your current password.')
+            ->setAttrib('class', 'password')
+            ->setRequired(true)
+            ->addFilter('StringTrim')
+            ->addValidator('AuthoriseWithLockOut', true, array('Model_User', 'email'));
 
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setLabel('Login')
