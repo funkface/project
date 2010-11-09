@@ -5,6 +5,7 @@ class Account_SettingsController extends Zend_Controller_action
     
     public function init()
     {
+
         $this->_user = Zend_Registry::get('user');
         $this->view->messages = $this->_helper->flashMessenger->getMessages();
     }
@@ -14,6 +15,7 @@ class Account_SettingsController extends Zend_Controller_action
 		$form = new Account_Form_Details($this->_user);
         $request = $this->getRequest();
         
+
         if($request->isPost() && $form->isValidWithDoctrineRecord($request->getPost(), $this->_user)){
 
             $this->_user->updateDetails();
@@ -27,6 +29,7 @@ class Account_SettingsController extends Zend_Controller_action
 	
 	public function passwordAction()
 	{
+
 		$form = new Account_Form_Password($this->_user);
         $request = $this->getRequest();
         

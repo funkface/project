@@ -3,6 +3,7 @@ class Account_Form_Activate extends App_Form
 {
     protected $_user;
 
+
     public function __construct(Model_User $user)
     {
         $this->_user = $user;
@@ -23,6 +24,7 @@ class Account_Form_Activate extends App_Form
             		Zend_Validate_Identical::NOT_SAME => 
             		'please enter the email address to which the activation link was sent'
             	)
+
            	))
            	->setDescription('The email address to which the activation link was sent');
 

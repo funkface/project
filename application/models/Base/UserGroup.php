@@ -26,9 +26,10 @@ abstract class Model_Base_UserGroup extends Doctrine_Record
              'primary' => true,
              'length' => 8,
              ));
-        $this->hasColumn('group_id', 'integer', 8, array(
+        $this->hasColumn('group_id', 'integer', null, array(
              'type' => 'integer',
              'primary' => true,
+
              'length' => 8,
              ));
         $this->hasColumn('role', 'enum', null, array(
@@ -40,6 +41,7 @@ abstract class Model_Base_UserGroup extends Doctrine_Record
               2 => 'leader',
              ),
              'default' => 'request',
+
              'notnull' => true,
              ));
     }

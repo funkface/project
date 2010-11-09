@@ -8,6 +8,7 @@ class Account_AuthController extends Zend_Controller_Action
     public function init()
     {
     	//$this->_helper->layout->setLayout('noauth');
+
     	if($this->getRequest()->getActionName() != 'index'){
         	$this->view->messages = $this->_helper->flashMessenger->getMessages();
     	}
@@ -30,6 +31,7 @@ class Account_AuthController extends Zend_Controller_Action
 
     public function loginAction()
     {
+
 		$request = $this->getRequest();
 		$abbr = $request->getParam('group');
 		
@@ -222,10 +224,12 @@ class Account_AuthController extends Zend_Controller_Action
         	}
 
         }
+
     }
     
     public function registerAction()
     {
+
     	$request = $this->getRequest();
     	$abbr = $request->getParam('group');
 
@@ -246,6 +250,7 @@ class Account_AuthController extends Zend_Controller_Action
                 'Your registration was successful. Please check your email in a few minutes for your activation link.'
             );
     		
+
     		$this->_helper->redirector->gotoRoute(array(
                 'controller' => 'index',
                 'action' => 'index'
@@ -253,6 +258,7 @@ class Account_AuthController extends Zend_Controller_Action
     	}
     	
     	$this->view->form = $form;
+
     	$this->view->group = $group;
     }
     
@@ -286,6 +292,7 @@ class Account_AuthController extends Zend_Controller_Action
         	
         	$this->view->form = $form;
     	}
+    	$this->view->form = $form;
     }
 
 }

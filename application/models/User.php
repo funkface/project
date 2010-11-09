@@ -60,6 +60,7 @@ class Model_User extends Model_Base_User
         $this->unlock();
     }
     
+
     public function unlock()
     {
         /*
@@ -109,6 +110,7 @@ class Model_User extends Model_Base_User
         $this->updateDetails();
     }
     
+
     public function requestMembership(Model_Group $group)
     {
         $this->Groups[] = $group;
@@ -120,6 +122,7 @@ class Model_User extends Model_Base_User
     {
         // get old values of modified fields
         $modified = $this->getModified(true);
+
         
         if(array_key_exists('email', $modified)){
             
@@ -166,6 +169,7 @@ class Model_User extends Model_Base_User
             $this->Groups[0]->requestMembership($this);
         }else{
             $this->save();
+
         } 
     }
     

@@ -10,6 +10,7 @@ class Account_Form_Login extends App_Form
 
         $username = new Zend_Form_Element_Text('email');
         $username->setLabel('Email address')
+
             ->setDescription('The email address registered against your account.')
             ->setAttrib('class', 'text')
             ->setRequired(true)

@@ -1,6 +1,7 @@
 <?php
 class Account_Form_Register extends App_Form
 {
+
     protected $_groupSelect = false;
     
     protected function setGroupSelect($groupSelect)
@@ -69,6 +70,7 @@ class Account_Form_Register extends App_Form
             ->setRequired(true)
             ->addFilter('StringTrim')
             ->addValidator('Password');
+
             
         $passwordConfirm = new Zend_Form_Element_Password('password_confirm');
         $passwordConfirm->setLabel('Confirm new Password')

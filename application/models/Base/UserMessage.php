@@ -39,6 +39,7 @@ abstract class Model_Base_UserMessage extends Doctrine_Record
               1 => 'read',
               2 => 'deleted',
              ),
+
              'default' => 'new',
              'notnull' => true,
              ));

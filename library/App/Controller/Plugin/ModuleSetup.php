@@ -15,6 +15,7 @@ class App_Controller_Plugin_ModuleSetup extends Zend_Controller_Plugin_Abstract
         }
 
         $moduleName = $request->getModuleName();
+
         $controllerName = $request->getControllerName();
         
         if($moduleName == 'account' && $controllerName != 'auth'){

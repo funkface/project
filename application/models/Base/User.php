@@ -22,6 +22,7 @@
  * @property string $member_no
  * @property string $avatar
  * @property string $signature
+
  * @property Doctrine_Collection $Groups
  * @property Doctrine_Collection $ReceivedMessages
  * @property Doctrine_Collection $SentMessages
@@ -42,6 +43,7 @@ abstract class Model_Base_User extends Doctrine_Record
         $this->setTableName('user');
         $this->hasColumn('email', 'string', 127, array(
              'type' => 'string',
+
              'email' => true,
              'length' => '127',
              ));
@@ -84,11 +86,13 @@ abstract class Model_Base_User extends Doctrine_Record
              ));
         $this->hasColumn('first_name', 'string', 63, array(
              'type' => 'string',
+
              'regexp' => '/^[\\w ]+$/',
              'length' => '63',
              ));
         $this->hasColumn('last_name', 'string', 63, array(
              'type' => 'string',
+
              'regexp' => '/^\\w+$/',
              'length' => '63',
              ));
@@ -109,6 +113,7 @@ abstract class Model_Base_User extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
+
         $this->hasMany('Model_Group as Groups', array(
              'refClass' => 'Model_UserGroup',
              'local' => 'user_id',
@@ -120,22 +125,29 @@ abstract class Model_Base_User extends Doctrine_Record
              'foreign' => 'message_id'));
 
         $this->hasMany('Model_Message as SentMessages', array(
+
              'local' => 'id',
              'foreign' => 'from_user_id'));
 
         $this->hasMany('Model_UserGroup as UserGroup', array(
              'local' => 'id',
+
              'foreign' => 'user_id'));
 
         $this->hasMany('Model_UserMessage as UserMessage', array(
              'local' => 'id',
              'foreign' => 'user_id'));
 
+
         $this->hasMany('Model_Topic as Topic', array(
              'local' => 'id',
              'foreign' => 'user_id'));
 
         $this->hasMany('Model_Post as Post', array(
+             'local' => 'id',
+             'foreign' => 'user_id'));
+
+        $this->hasMany('Model_UserMessage as UserMessage', array(
              'local' => 'id',
              'foreign' => 'user_id'));
     }

@@ -16,6 +16,7 @@ class Model_UserTable extends Doctrine_Table
     {
         return Doctrine_Core::getTable('Model_User');
     }
+
     
     public function findUsersByFullNamesAndGroups(array $userNames, Doctrine_Collection $groups)
     {
