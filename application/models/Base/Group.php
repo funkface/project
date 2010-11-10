@@ -59,18 +59,6 @@ abstract class Model_Base_Group extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('Model_Event as Event', array(
-             'local' => 'id',
-             'foreign' => 'group_id'));
-
-        $this->hasMany('Model_CaseStudy as CaseStudy', array(
-             'local' => 'id',
-             'foreign' => 'group_id'));
-
-        $this->hasMany('Model_Gallery as Gallery', array(
-             'local' => 'id',
-             'foreign' => 'group_id'));
-
         $this->hasMany('Model_User as User', array(
              'refClass' => 'Model_UserGroup',
              'local' => 'group_id',
