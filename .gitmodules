@@ -4,3 +4,6 @@
 [submodule "library/Doctrine"]
 	path = library/Doctrine
 	url = git@github.com:funkface/doctrine1.git
+[submodule "library/App"]
+	path = library/App
+	url = git@github.com:funkface/App.git
