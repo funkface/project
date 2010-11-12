@@ -7,3 +7,6 @@
 [submodule "library/App"]
 	path = library/App
 	url = git@github.com:funkface/App.git
+[submodule "App"]
+	path = App
+	url = git@github.com:funkface/App.git

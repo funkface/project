@@ -1,0 +1,2 @@
+basicloader.classes.0 = App_Tool_Manifest
+basicloader.classes.1 = App_Tool_AppDbProvider
