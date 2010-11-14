@@ -42,35 +42,7 @@
           <dbTableFile dbTableName="User"/>
         </dbTableDirectory>
         <appTableDirectory>
-          <appTableFile appTableName="Joker"/>
-          <appTableFile appTableName="Group"/>
-          <appTableFile appTableName="List"/>
-          <appTableFile appTableName="Message"/>
-          <appTableFile appTableName="MessageImage"/>
-          <appTableFile appTableName="MigrationVersion"/>
-          <appTableFile appTableName="Milestone"/>
-          <appTableFile appTableName="PostImage"/>
-          <appTableFile appTableName="Project"/>
-          <appTableFile appTableName="Todo"/>
-          <appTableFile appTableName="Topic"/>
-          <appTableFile appTableName="User"/>
-          <appTableFile appTableName="UserGroup"/>
-          <appTableFile appTableName="UserMessage"/>
         </appTableDirectory>
-        <appTableRowFile appTableName="Joker"/>
-        <appTableRowFile appTableName="Group"/>
-        <appTableRowFile appTableName="List"/>
-        <appTableRowFile appTableName="Message"/>
-        <appTableRowFile appTableName="MessageImage"/>
-        <appTableRowFile appTableName="MigrationVersion"/>
-        <appTableRowFile appTableName="Milestone"/>
-        <appTableRowFile appTableName="PostImage"/>
-        <appTableRowFile appTableName="Project"/>
-        <appTableRowFile appTableName="Todo"/>
-        <appTableRowFile appTableName="Topic"/>
-        <appTableRowFile appTableName="User"/>
-        <appTableRowFile appTableName="UserGroup"/>
-        <appTableRowFile appTableName="UserMessage"/>
       </modelsDirectory>
       <modulesDirectory enabled="false">
         <moduleDirectory moduleName="forum">
